@@ -63,9 +63,6 @@ var main = function(result){
 	//创建题目迭代器
 	var iter = question.iterator()
 
-	// 第一次渲染题目
-	view.showQuestion(iter.first())
-
 	/**
 	 * 前后题目切换模块,需要解决数据耦合,所以在外部实现
 	 * @param  {[type]} view [视图对象]
@@ -92,16 +89,20 @@ var main = function(result){
 
 
 	// 创建题目状态管理模块,参数为id
-	question.createManager("stateManager")
+	view.createAnswerSheet("answerSheet",question.questions.length)
 	// 点击切换题目
-	stateHandler = stateHandler.bind(question, view, iter)
-	question.stateManager.addEventListener("click", stateHandler, false)
-	function stateHandler(view, iter, event){
+	answerSheetHandler = answerSheetHandler.bind(view, iter)
+	view.answerSheet.element.addEventListener("click", answerSheetHandler, false)
+	function answerSheetHandler(iter, event){
 		var target = event.target,
 			// 序号
 			num = parseInt(target.innerHTML)
+		// 过滤
+		if (target.parentNode != this.answerSheet.element) {
+			return
+		}
 		// 加载对应题号的题目
-		view.showQuestion(iter.get(num-1))
+		this.showQuestion(iter.get(num-1))
 
 		// 设置背景颜色
 		Observer.fire("changeStateColor",{
@@ -113,7 +114,9 @@ var main = function(result){
 		// 将点击过的元素缓存起来以便后面使用
 		this.preEle = target
 	}
-
+	
+	// 第一次渲染题目
+	view.showQuestion(iter.first())
 
 	Observer.setWatcher("question",question)
 	Observer.setWatcher("view",view)

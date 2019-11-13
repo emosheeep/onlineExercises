@@ -36,19 +36,19 @@ var Observer = (function(question, view){
 
 //传入事件目标dom和颜色,将目标的颜色改为指定颜色
 Observer.register("changeStateColor", function(event){
+	console.log(event)
 	let data = event.data
 	// 存在上一个元素则将上一个元素的active类移除
 	data.preEle && data.preEle.classList.remove(data.color)
-	data.target.classList.add(data.color,"defalut")
+	data.target.classList.add(data.color)
 })
 
 //将view视图上的正误结果反映到state状态上
 Observer.register("viewToState", function(event){
 	let data = event.data,
 		watcher = Observer.getWatcher(),
-		divs = watcher.question.stateManager.children
+		divs = watcher.view.answerSheet.element.children
 	// 如果答题正确,将state对应题号改为绿色(添加success类)
-	console.log(data.status)
 	if (data.status) {
 		// 根据题号获取dom元素
 		Observer.fire("changeStateColor", {
@@ -56,7 +56,6 @@ Observer.register("viewToState", function(event){
 			color: "success"
 		})
 	} else {
-
 		Observer.fire("changeStateColor", {
 			target: divs[data.quesNum-1],
 			color: "failed"

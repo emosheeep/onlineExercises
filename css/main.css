@@ -31,11 +31,10 @@ ol#list li{
 	line-height: 40px;
 	border-radius: 5px;
 }
-ol#list li:hover{
-	background-color: rgba(245,245,245);
+ol#list>li:hover{
+	background-color: rgb(245,245,245);
 }
 .defalut{
-	/*background-color: rgba(245,245,245);*/
 	background-color: rgb(231,234,237);
 }
 .success{
@@ -47,14 +46,15 @@ ol#list li:hover{
 .active{
 	background-color: lightblue!important;
 }
-#stateManager{
+#answerSheet{
 	display: flex;
 	flex-wrap: wrap;
 	overflow: scroll;
 	height: 300px;
-	width: 300px;
+	width: 310px;
 }
-#stateManager div{
+#answerSheet::-webkit-scrollbar {display:none}
+#answerSheet div{
 	height: 30px;
 	width: 30px;
 	line-height: 30px;
@@ -62,6 +62,6 @@ ol#list li:hover{
 	cursor: pointer;
 	outline: 1px solid rgb(245,245,245)
 }
-#stateManager div:hover{
+#answerSheet div:hover{
 	background-color: rgb(217,237,247);
 }

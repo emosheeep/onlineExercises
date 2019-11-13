@@ -5,9 +5,6 @@
 var Question = function(data){
 	// 加载题库
 	this.questions = data
-	this.stateManager = null
-	// 上一个元素的缓存
-	this.preEle = null
 	// 将题库数据根据视图进行适配
 	this.init(data)
 }
@@ -26,27 +23,13 @@ Question.prototype = {
 			}
 			result.push(temp)
 		})
-
+		
+		// 去掉表头
 		if (isNaN(result[0].num)) {
 			result.shift()
 		}
 		// 替换原来的数据
 		this.questions = result
-		console.log(this.questions)
-	},
-	/**
-	 * 题目状态管理,对错,以及题目数量等等
-	 */
-	createManager: function(id){
-		var div = document.getElementById(id),
-			// 视图缓存
-			html = ''
-		// i从1开始,因为第一行是表头
-		for (let i=1; i<this.questions.length; i++) {
-			html += `<div>${i}</div>`
-		}
-		div.innerHTML = html
-		this.stateManager = div
 	},
 	/**
 	 * 题目迭代器
@@ -67,7 +50,6 @@ Question.prototype = {
 				return items[index]
 			},
 			pre: function(){
-				console.log(index)
 				if(--index >= 0){  //  如果索引值大于等于零获取相应元素
 					return items[index]
 				} else {
@@ -102,6 +84,16 @@ var QuestionView = function(id){
 	this.init(id)
 	// 当前题目信息
 	this.currentQuestion = null
+	// 答题卡
+	this.answerSheet = {
+		// dom元素
+		element: null,
+		// 答题数据
+		state: {},
+		changeColor: function(){}
+	}
+	// 上一个元素的缓存
+	this.preEle = null
 }
 QuestionView.prototype = {
 	/**
@@ -148,22 +140,60 @@ QuestionView.prototype = {
 		Array.prototype.forEach.call(list, function(item, index){
 			item.innerText = data.list[index]
 		})
-		//设置当前题目
+		//缓存当前题目
 		this.currentQuestion = data
 		// 重置选项颜色
 		this.resetColor()
-		//设置正确答案
-		this.answer = data.answer
-		//重新绑定事件
-		this.bindEvent()
+		
+		//传入题号,检测答题信息,并设置题目状态
+		let isDone = this.checkState(this.currentQuestion["num"])
+		// 移除之前添加但可能未被触发的事件,防止重复触发
+		this.quesList.onclick = null
+		//如果题目没有做过则重新绑定事件
+		if(!isDone){
+			this.bindEvent()
+		}
+		
+		// 获取答题卡当前元素
+		let target = this.answerSheet.element.children[data.num-1]
+		//答题卡对应变色
+		Observer.fire("changeStateColor", {
+			color: "active",
+			target: target,
+			preEle: this.preEle
+		})
+		// 缓存上一个元素
+		this.preEle = target
+	},
+	/**
+	 * 创建答题卡
+	 * id        答题卡id
+	 * length    题目数量
+	 */
+	createAnswerSheet: function(id, length){
+		var div = document.getElementById(id),
+			// 视图缓存
+			html = ''
+		// 没有表头，第一行就是数据
+		for (let i=1; i<=length; i++) {
+			html += `<div>${i}</div>`
+		}
+		div.innerHTML = html
+		this.answerSheet.element = div
+		// 添加方法
+		var _this = this
+		/**
+		 * @param {Object} quesInfo  题目信息
+		 */
+		this.answerSheet.changeColor = function(quesInfo){
+			Observer.fire("viewToState", quesInfo)
+		}
 	},
 	/**
 	 * 事件委托,绑定验证逻辑的事件
 	 */
 	bindEvent: function(){
 		let _this = this
-		// 移除之前添加但可能未被触发的事件,防止重复触发
-		_this.quesList.onclick = null
 		// 使用dom0级方式绑定事件,便于清除事件
 		_this.quesList.onclick = function(event){
 			let target = event.target
@@ -171,45 +201,51 @@ QuestionView.prototype = {
 			if (target.nodeName != "LI") {
 				return
 			}
-
+			let myAns = target.getAttribute("answer"),
+				rightAns = _this.currentQuestion["answer"]
 			// flag为返回的判断结果对象
-			let judgeResult = _this.judge(target)
+			let judgeResult = _this.judge(myAns, rightAns)
 			// 如果答题正确正确,自动下一题,并更新state状态
 			if(judgeResult.status){
 				setTimeout(function(){
 					_this.nextBtn.click()
 				}, 200)
 			}
+			// 增强对象，添加题号
 			judgeResult.quesNum = _this.currentQuestion["num"]
-			Observer.fire("viewToState", judgeResult)
-			
+			// 保存每道题的答题信息
+			_this.answerSheet.state[judgeResult.quesNum] = judgeResult
+			// 改变答题卡信息
+			_this.answerSheet.changeColor(judgeResult)
 			// 触发之后移除事件防止多次触发
 			_this.quesList.onclick = null
 		}
 	},
 	/**
 	 * 验证答案并设置题目状态
-	 * @param  {[type]} myItem    [我的答案]
+	 * @param  {[type]} myAns    [我的答案]
 	 */
-	judge: function(myItem){
+	judge: function(myAns, rightAns){
 		//获取选项列表
 		let list = this.quesList.children,
-			//获取我的答案
-			myAns = myItem.getAttribute("answer"),
-			//获取正确答案
-			rightAns = this.currentQuestion["answer"],
 			// 题正误状态
 			status = true,
 			// 获取正确项
-			rightItem
+			rightItem,
+			// 我的选项
+			myItem
 		// 通过正确答案找到正确项
 		for (let item of list) {
+			// 每一项对应的答案
 			let ans = item.getAttribute("answer")
-			if (ans == rightAns) {
+			if (rightAns == ans) {
 				rightItem = item
 			}
+			if(myAns == ans){
+				myItem = item
+			}
 		}
-
+		
 		// 比对正确项与我的选项,并设置状态
 		if (myItem == rightItem) {
 			myItem.classList.add("success")
@@ -220,7 +256,7 @@ QuestionView.prototype = {
 		}
 		return {
 			status: status,
-			answer: myAns,
+			myAns: myAns,
 			rightAns: rightAns
 		}
 	},
@@ -231,6 +267,21 @@ QuestionView.prototype = {
 		let list = this.quesList.children
 		for (let item of list) {
 			item.className = ""
+		}
+	},
+	/**
+	 * 检查答题信息，设置答题状态,返回题目是否已经做过
+	 */
+	checkState: function(quesNum){
+		// 获取答题记录
+		var quesInfo = this.answerSheet.state[quesNum]
+		// 如果存在答题记录则根据记录设置答题状态
+		if (quesInfo) {
+			// 传入答案设置状态
+			this.judge(quesInfo.myAns, quesInfo.rightAns)
+			return true
+		} else {
+			return false
 		}
 	}
 }
