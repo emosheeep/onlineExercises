@@ -55,71 +55,23 @@ var loadQuestion = function(id, callback){
  * @param {Object} result   文件读取成功后的数据
  */
 var main = function(result){
-	// 创建题目数据管理对象
-	var question = new Question(result),
-		// 视图管理对象
-		view = new QuestionView("container")
-
-	//创建题目迭代器
-	var iter = question.iterator()
-
-	/**
-	 * 前后题目切换模块,需要解决数据耦合,所以在外部实现
-	 * @param  {[type]} view [视图对象]
-	 * @param  {[type]} iter [数据迭代器]
-	 */
-	var preHandler = function(view, iter){
-		let data = iter.pre()
-		if(data){
-			view.showQuestion(data)
-		}
-	},
-	nextHandler = function(view, iter){
-		let data = iter.next()
-		if(data){
-			view.showQuestion(data)
-		}
-	}
-	// 函数柯里化传入额外数据重写函数
-	preHandler = preHandler.bind(view.preBtn, view, iter)
-	nextHandler = nextHandler.bind(view.nextBtn, view, iter)
-	// 绑定事件
-	view.preBtn.addEventListener("click", preHandler, false)
-	view.nextBtn.addEventListener("click", nextHandler, false)
-
-
-	// 创建题目状态管理模块,参数为id
-	view.createAnswerSheet("answerSheet",question.questions.length)
-	// 点击切换题目
-	answerSheetHandler = answerSheetHandler.bind(view, iter)
-	view.answerSheet.element.addEventListener("click", answerSheetHandler, false)
-	function answerSheetHandler(iter, event){
-		var target = event.target,
-			// 序号
-			num = parseInt(target.innerHTML)
-		// 过滤
-		if (target.parentNode != this.answerSheet.element) {
-			return
-		}
-		// 加载对应题号的题目
-		this.showQuestion(iter.get(num-1))
-
-		// 设置背景颜色
-		Observer.fire("changeStateColor",{
-			color: "active",
-			// 当前元素和上一个元素
-			target: target,
-			preEle: this.preEle
-		})
-		// 将点击过的元素缓存起来以便后面使用
-		this.preEle = target
-	}
 	
-	// 第一次渲染题目
-	view.showQuestion(iter.first())
+	// 创建题目数据管理对象
+	var model = MVC.model,
+		// 视图管理对象
+		view = MVC.view,
+		ctrl = MVC.ctrl
 
-	Observer.setWatcher("question",question)
-	Observer.setWatcher("view",view)
+	//构造并初始化数据模型题目数据
+	model.matchData(result)
+	//初始化试图视图模型
+	view.init("container")
+	// 首次渲染题目
+	view.showQuestion(model.iterator.first())
+	
+	//执行控制器
+	ctrl.init()
+	
 }
 //加载题目并执行回调函数
 loadQuestion("file", main)
