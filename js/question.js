@@ -1,3 +1,266 @@
+//利用MVP模式构建代码
+window.addEventListener('load', function(){
+	// 初始化MVP对象
+	var MVC = {}
+	// 初始化数据模型层
+	MVC.model = function(){
+		// 数据对象
+		var Quedtion = {
+			// 保存题目数据,对象数组
+			data: [],
+			// 保存题目状态,即答题卡数据
+			state: {},
+			// 保存当前题目数据
+			current: null
+		}
+		// 返回数据层接口
+		return {
+			/**
+			 * 添加题目数据
+			 * @param {Object} key     题目序号
+			 * @param {Object} value   题目对象
+			 */
+			setData: function(key, value){
+				Question.data[key] = value
+				return this
+			},
+			/**
+			 * 题目迭代器
+			 */
+			iterator: function(){
+				if(Question.data.length == 0)
+					throw new Error("没有数据！")
+				// 当前索引值，默认为0
+				var index = 0,
+					items = Question.data
+				return {
+					first: function(){
+						index = 0  // 矫正当前索引和当前题目
+						Question.current = items[index]
+						return items[index]
+					},
+					last: function(){
+						index = items.length - 1
+						Question.current = items[index]
+						return items[index]
+					},
+					pre: function(){
+						if(--index >= 0){  //  如果索引值大于等于零获取相应元素
+							Question.current = items[index]
+							return items[index]
+						} else {
+							index = 0
+							return null
+						}
+					},
+					next: function(){
+						if(++index < items.length){  // 如果索引在范围内就获取元素
+							Question.current = items[index]
+							return items[index]
+						} else {
+							//矫正index
+							index = items.length - 1
+							return null
+						}
+					},
+					get: function(num){
+						if (num >= 0 && num <items.length) {
+							Question.current = items[index]
+							index = num  // 矫正index
+							return items[index]
+						} else return null
+					}
+				}
+			},
+			/**
+			 * 添加题目状态数据
+			 * @param {Object} key     题目序号
+			 * @param {Object} value   题目状态对象
+			 */
+			setState: function(){
+				Question.state[key] = value
+				return this
+			},
+			/**
+			 * 获取题目状态数据
+			 * @param {Object} key  题目序号
+			 */
+			getState: function(key){
+				return Question.state[key]
+			}
+			
+		}
+	}()
+	// 初始化视图层
+	MVC.view = function(){
+		// 保存dom组件
+		var views = {
+			question: {
+				id: null,
+				title: null,
+				list: [],
+				preBtn: null,
+				nextBtn: null
+			},
+			answerSheet: {
+				element: null,
+				preEle: null
+			}
+		}
+		return {
+			/**
+			 * 初始化视图
+			 */
+			init: function(id){
+				let html = `
+					<div class="panel panel-default questionBox">
+						<div class="panel-heading header">
+							<span id="id"></span><p id="title"></p>
+						</div>
+						<div class="panel-body body">
+							<ol type="A" id="list">
+								<li answer="A"></li>
+								<li answer="B"></li>
+								<li answer="C"></li>
+								<li answer="D"></li>
+							</ol>
+						</div>
+						<div class="panel-footer footer">
+							<button id="preBtn" class="btn btn-default">上一题</button>
+							<button id="nextBtn" class="btn btn-default">下一题</button>
+						</div>
+					</div>
+				`
+				// 初始化试图
+				let div = document.getElementById(id)
+				div.innerHTML = html
+				// 缓存视图组件
+				question.title = document.getElementById("title") //题目
+				question.list = document.getElementById("list")  //选项列表
+				question.preBtn = document.getElementById("preBtn")  //上一题按钮
+				question.nextBtn = document.getElementById("nextBtn")//下一题按钮
+			},
+			/**
+			 * 渲染题目数据
+			 * @param {Object} data
+			 */
+			showQuestion: function(data){
+				let question = view.question
+				question.id.innerText = data.id
+				question.title.innerText = data.title
+				[].forEach.call(question.list.children, function(item, index){
+					item.innerText = data.list[index]
+				})
+			},
+			/**
+			 * 验证答案并设置题目状态
+			 * @param  {[type]} myAns       [我的答案]
+			 * @param  {[type]} rightAns    [正确答案]
+			 */
+			judge: function(myAns, rightAns){
+				//获取选项列表
+				let list = view.question.list.children,
+					// 题正误状态
+					status = true,
+					// 获取正确项
+					rightItem,
+					// 我的选项
+					myItem
+				// 通过正确答案找到正确dom项
+				for (let item of list) {
+					// 每一项对应的答案
+					let ans = item.getAttribute("answer")
+					if (rightAns == ans) {
+						rightItem = item
+					}
+					if(myAns == ans){
+						myItem = item
+					}
+				}
+				
+				// 比对正确项与我的选项,并设置状态
+				if (myItem == rightItem) {
+					myItem.classList.add("success")
+				} else {
+					myItem.classList.add("failed")
+					rightItem.classList.add("success")
+					status = false
+				}
+				// 返回题目状态信息
+				return {
+					// 对错
+					status: status,
+					// 我的答案和正确答案
+					myAns: myAns,
+					rightAns: rightAns
+				}
+			},
+			/**
+			 * 创建答题卡
+			 * id        答题卡id
+			 * length    题目数量
+			 */
+			createAnswerSheet: function(id, length){
+				var div = document.getElementById(id),
+					// 视图缓存
+					html = ''
+				// 没有表头，第一行就是数据
+				for (let i=1; i<=length; i++) {
+					html += `<div>${i}</div>`
+				}
+				div.innerHTML = html
+				view.answerSheet.element = div
+				// 答题卡操作接口
+				return {
+					/**
+					 * 设置为答题正确
+					 * @param {Object} id  答题卡序号
+					 */ 
+					success: function(id){
+						let items = view.answerSheet.element.children
+						items[id].className = "success"
+					},
+					fail: function(id){
+						let items = view.answerSheet.element.children
+						items[id].className = "failed"
+					},
+					// 设置答题卡光标
+					current: function(id){
+						let items = view.answerSheet.element.children
+						// 如果存在上一个元素则移除其active类
+						if(view.answerSheet.preEle){
+							view.answerSheet.preEle.classList.remove("active")
+						}
+						items[id].classList.add("active")
+						// 更新上一个元素
+						view.answerSheet.preEle = items[id]
+					}
+				}
+			},
+			// 切换题目时,重置选项颜色
+			resetColor: function(){
+				let list = view.question.list
+				for (let item of list) {
+					item.className = ""
+				}
+			},
+			// 获取题目视图组件,绑定事件在外部进行
+			getQuestionView: function(){
+				return view.question
+			},
+			// 获取答题卡视图组件,外部绑定事件
+			getAnswerSheetView: function(){
+				return view.answerSheet.element
+			}
+		}
+	}
+	}()
+	// 初始化管理器层
+	MVC.ctrl = function(){
+		
+	}()
+})
+
 /**
  * 题目数据管理模块
  * @param {Object} id  上传文件的元素id
