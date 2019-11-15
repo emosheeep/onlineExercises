@@ -245,11 +245,11 @@ MVC.view = function(){
 				 */ 
 				success: function(id){
 					let items = view.answerSheet.element.children
-					items[id].className = "success"
+					items[id].classList.add("success")
 				},
 				fail: function(id){
 					let items = view.answerSheet.element.children
-					items[id].className = "failed"
+					items[id].classList.add("failed") 
 				},
 				// 设置答题卡光标
 				current: function(id){
@@ -340,7 +340,6 @@ MVC.ctrl = function(){
 			// 传入的是题目id,不需要减一
 			var checkState = function(id){
 				var curState = M.getState(id)
-				console.log(id,curState)
 				V.resetColor()
 				if (curState) {
 					V.judge(curState.myAns, curState.rightAns)
@@ -360,7 +359,6 @@ MVC.ctrl = function(){
 				checkState(quesNum)
 				V.showQuestion(M.iterator.get(quesNum - 1))
 				sheet.current(quesNum - 1)
-				
 			})
 			
 			/**

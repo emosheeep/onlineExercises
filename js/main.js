@@ -68,7 +68,6 @@ var main = function(result){
 	view.init("container")
 	// 首次渲染题目
 	view.showQuestion(model.iterator.first())
-	
 	//执行控制器
 	ctrl.init()
 	
