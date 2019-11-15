@@ -49,7 +49,7 @@ MVC.model = function(){
 			let items = Question.data
 			return {
 				first: function(){
-					index = 0  // 矫正当前索引和当前题目
+					index = 0  // 矫正当前索引和当前题目,矫正要放在前面
 					Question.current = items[index]
 					return items[index]
 				},
@@ -79,8 +79,8 @@ MVC.model = function(){
 				},
 				get: function(num){
 					if (num >= 0 && num <items.length) {
+						index = num  // 矫正index,注意先后顺序
 						Question.current = items[index]
-						index = num  // 矫正index
 						return items[index]
 					} else return null
 				},
@@ -292,7 +292,6 @@ MVC.ctrl = function(){
 	C = {
 		//初始化控制器
 		bindEvent: function(M, V){
-			
 			// 创建答题卡模块
 			let id = V.getContainer().id,
 				length = M.iterator.getLength(),
@@ -301,6 +300,7 @@ MVC.ctrl = function(){
 				// 获取dom元素,注意要先创建答题卡才能获取
 				answerSheet = V.getAnswerSheetView()
 				// 绑定题目模块的事件
+			//获取题目模块的dom元素
 			let	question = V.getQuestionView(),
 			clickHandler =  function(event){
 				let target = event.target
@@ -313,9 +313,8 @@ MVC.ctrl = function(){
 						rightAns = currentQuestion["answer"]
 					// flag为返回的判断结果对象
 					let judgeResult = V.judge(myAns, rightAns)
-					// 添加做题记录
-					M.setState(currentQuestion.id, judgeResult)
 					// 如果答题正确正确,自动下一题,并更新state状态
+					console.log(currentQuestion)
 					if(judgeResult.status){
 						// 改变答题卡信息
 						sheet.success(currentQuestion.id - 1)
@@ -326,6 +325,8 @@ MVC.ctrl = function(){
 					} else {
 						sheet.fail(currentQuestion.id - 1)
 					}
+					// 添加做题记录
+					M.setState(currentQuestion.id, judgeResult)
 					// 触发之后移除事件防止多次触发
 					question.list.onclick = null
 			}
@@ -354,11 +355,12 @@ MVC.ctrl = function(){
 			answerSheet.addEventListener("click", function(event){
 				let target = event.target,
 					// 获取序号,序号要减一
-					quesNum = target.innerText
-				
-				checkState(quesNum)
-				V.showQuestion(M.iterator.get(quesNum - 1))
-				sheet.current(quesNum - 1)
+					quesNum = target.innerText,
+					// 获取当前题目
+					curQuestion = M.iterator.get(quesNum - 1)
+				checkState(curQuestion.id)
+				V.showQuestion(curQuestion)
+				sheet.current(curQuestion.id - 1)
 			})
 			
 			/**
