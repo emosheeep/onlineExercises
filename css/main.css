@@ -1,29 +1,23 @@
-div.questionBox{
-	margin-bottom: 0;
-	width: 600px;
-	height: 350px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
 .header{
-	min-height: 50px;
+	padding: 8px!important;
 	font-size: 18px;
 }
 .body{
-	height: 60%;
+	padding: 5px!important;
+	flex-grow: 1;
 }
 .footer{}
 #id::after{
-	content: ".";
+	content: ". ";
 }
 #title{
 	margin: 0;
 }
 ol#list{
+	margin: 0;
 	padding: 0 0 0 20px;
-	height: 100%;
 	font-size: 18px;
+	height: inherit;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -37,6 +31,18 @@ ol#list li{
 ol#list>li:hover{
 	background-color: rgb(245,245,245);
 }
+ol#list li:nth-child(1)::before{
+	content: "A. ";
+}
+ol#list li:nth-child(2)::before{
+	content: "B. ";
+}
+ol#list li:nth-child(3)::before{
+	content: "C. ";
+}
+ol#list li:nth-child(4)::before{
+	content: "D. ";
+}
 .defalut{
 	background-color: rgb(231,234,237);
 }
@@ -49,14 +55,46 @@ ol#list>li:hover{
 .active{
 	background-color: lightblue!important;
 }
+#container{
+	width: 100%;
+}
+#questionBox{
+	float: left;
+	width: 600px;
+	min-height: 350px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
 #answerSheet{
+	margin: 0;
 	display: flex;
 	flex-wrap: wrap;
-	overflow: scroll;
-	height: 300px;
-	width: 310px;
+	overflow-y: scroll;
+	height: 350px;
+	width: 312px;
+	border-radius: 3px;
+	border: 1px darkgrey solid;
+	box-shadow: rgba(203,203,203,0.5) 1px 0 5px;
 }
-#answerSheet::-webkit-scrollbar {display:none}
+/* 滚动条 */
+#answerSheet::-webkit-scrollbar-button{
+	display: none;
+}
+#answerSheet::-webkit-scrollbar-thumb{
+	background-color: #ADD8E6;
+	border-radius: 10px;
+	background-color: rgba(168,168,168, 0.5);
+	transition: all 200ms ease-in-out;
+}
+#answerSheet::-webkit-scrollbar-thumb:hover{
+	background-color: rgba(168,168,168, 0.8);
+}
+#answerSheet::-webkit-scrollbar{
+	width: 9px;
+	background-color: rgba(231,234,237, 0.5);
+	border-radius: 5px;
+}
 #answerSheet div{
 	height: 30px;
 	width: 30px;

@@ -28,7 +28,7 @@ MVC.model = function(){
 					id: parseInt(item[0]),
 					title: item[1].trim(),
 					list: [item[2], item[3], item[4], item[5]],
-					answer: item[6].trim()
+					answer: item[6].trim().toUpperCase()
 				}
 				// 设置数据
 				_this.pushData(data)
@@ -133,18 +133,16 @@ MVC.view = function(){
 		 */
 		init: function(id){
 			let html = `
-				<div class="panel panel-default questionBox">
+				<div id="questionBox" class="panel panel-default">
 					<div class="panel-heading header">
 						<div><span id="id"></span><span id="title"></span></div>
 					</div>
-					<div class="panel-body body">
-						<ol type="A" id="list">
-							<li answer="A"></li>
-							<li answer="B"></li>
-							<li answer="C"></li>
-							<li answer="D"></li>
-						</ol>
-					</div>
+					<ol id="list" class="panel-body body">
+						<li answer="A"></li>
+						<li answer="B"></li>
+						<li answer="C"></li>
+						<li answer="D"></li>
+					</ol>
 					<div class="panel-footer footer">
 						<button id="preBtn" class="btn btn-default">上一题</button>
 						<button id="nextBtn" class="btn btn-default">下一题</button>
@@ -314,7 +312,6 @@ MVC.ctrl = function(){
 					// flag为返回的判断结果对象
 					let judgeResult = V.judge(myAns, rightAns)
 					// 如果答题正确正确,自动下一题,并更新state状态
-					console.log(currentQuestion)
 					if(judgeResult.status){
 						// 改变答题卡信息
 						sheet.success(currentQuestion.id - 1)
