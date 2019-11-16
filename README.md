@@ -15,6 +15,8 @@
 负责读取表格数据并将数据传递到MVP架构中
 ### question.js
 项目核心文件，使用的是MVP的模式，但是我还是用的MVC来命名的。MVC.model是数据模块，MVC.view是视图模块，MVC.ctrl是控制器模块
+
+
 ![model](README_files/1.jpg)
 ![view](README_files/2.jpg)
 ![ctrl](README_files/3.jpg)
