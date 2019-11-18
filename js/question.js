@@ -243,11 +243,11 @@ MVC.view = function(){
 				 */ 
 				success: function(id){
 					let items = view.answerSheet.element.children
-					items[id].classList.add("success")
+					items[id].className = "success"
 				},
 				fail: function(id){
 					let items = view.answerSheet.element.children
-					items[id].classList.add("failed") 
+					items[id].className = "failed"
 				},
 				// 设置答题卡光标
 				current: function(id){
@@ -339,6 +339,9 @@ MVC.ctrl = function(){
 			var checkState = function(id){
 				var curState = M.getState(id)
 				V.resetColor()
+				// 手动清除click事件,防止出现其他题目绑定事件后没有触发
+				// 导致事件被简介绑定到简介绑定到已经答过的题目上
+				question.list.onclick = null
 				if (curState) {
 					V.judge(curState.myAns, curState.rightAns)
 				} else {
