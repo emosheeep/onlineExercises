@@ -27,7 +27,7 @@ function formatQuestion(data){
 	return result
 }	
 
-// 读取目录下所有题库
+// 读取目录下所有题库,该目录是相对于index.js的目录
 const dir = "./questions"
 var quesList = {}
 var files = fs.readdirSync(dir)
@@ -41,13 +41,10 @@ files.forEach(function(item){
 	quesList[item] = formatQuestion(data)
 })
 
-
-module.exports = function(filename){
-	if (quesList[filename]) {
-		return quesList[filename]
-	} else {
-		return false
-	}
+module.exports = {
+	files: files,
+	quesList: quesList
 }
+	
 
 

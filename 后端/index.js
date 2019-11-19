@@ -1,10 +1,22 @@
 var express = require('express')
 var app = express()
-var getQuestions = require("./xlsx.js")
+var excel = require("./myModules/xlsx.js")
+var bodyParser = require('body-parser')
 
-
-app.get("/question", function(req, resp){
-	var data = getQuestions("知识竞赛题库.xlsx")
+app.use(bodyParser.urlencoded({extended:false}))
+app.post("/question", function(req, resp){
+	console.log(req.body)
+	var filename = req.body.filename,
+		data = null
+	for(let item of excel.files){
+		let pos = item.indexOf(filename)
+		if (pos != -1) {
+			// 说明当前文件名存在，直接使用item即可
+			data = excel.quesList[item]
+			break
+		}
+		 
+	}
 	if (data) {
 		resp.json({
 			success: true,
@@ -17,7 +29,10 @@ app.get("/question", function(req, resp){
 		})
 	}
 })
-
+app.get("/files", function(req, resp){
+	resp.status(200)
+	resp.json(excel.files)
+})
 app.use(function(req, resp){
 	resp.type('text/plain')
 	resp.status(404)

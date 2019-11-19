@@ -6,8 +6,28 @@
 		<link rel="stylesheet" type="text/css" href="css/main.css"/>
 	</head>
 	<body>
-	<button id="load">点击加载</button>
-	<div id="container"></div>
+		<div>
+			<button  id="load">点击加载</button>
+			<ul id="toLoad"></ul>
+		</div>
+		<div id="answerSheet"></div>
+		<div id="container">
+			<div id="questionBox" class="panel panel-default">
+				<div class="panel-heading header">
+					<div><span id="id">1</span><span id="title">loading</span></div>
+				</div>
+				<ol id="list" class="panel-body body">
+					<li answer="A">loading</li>
+					<li answer="B">loading</li>
+					<li answer="C">loading</li>
+					<li answer="D">loading</li>
+				</ol>
+				<div class="panel-footer footer">
+					<button id="preBtn" class="btn btn-default">上一题</button>
+					<button id="nextBtn" class="btn btn-default">下一题</button>
+				</div>
+			</div>
+		</div>
 	</body>
 	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>

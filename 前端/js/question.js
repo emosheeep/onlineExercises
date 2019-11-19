@@ -18,9 +18,10 @@ MVC.model = function(){
 		// 匹配数据
 		setData: function(result){
 			//去除表头
-			if (result[0]){
+			if (typeof result[0].id != "number"){
 				result.shift()
 			}
+			console.log(result)
 			for (let item of result) {
 				this.pushData(item)
 			}
@@ -123,31 +124,8 @@ MVC.view = function(){
 		 * 初始化视图
 		 */
 		init: function(id){
-			let html = `
-				<div id="questionBox" class="panel panel-default">
-					<div class="panel-heading header">
-						<div><span id="id"></span><span id="title"></span></div>
-					</div>
-					<ol id="list" class="panel-body body">
-						<li answer="A"></li>
-						<li answer="B"></li>
-						<li answer="C"></li>
-						<li answer="D"></li>
-					</ol>
-					<div class="panel-footer footer">
-						<button id="preBtn" class="btn btn-default">上一题</button>
-						<button id="nextBtn" class="btn btn-default">下一题</button>
-					</div>
-				</div>
-			`
-			// 初始化试图
-			var div = document.createElement('div')
-			div.innerHTML = html
-			div.id = "question"
-			let container = document.getElementById(id)
-			container.appendChild(div)
 			// 缓存视图组件
-			view.container = container
+			view.container = document.getElementById(id)
 			view.question.id = document.getElementById("id") //题目
 			view.question.title = document.getElementById("title") //题目
 			view.question.list = document.getElementById("list")  //选项列表
@@ -214,8 +192,8 @@ MVC.view = function(){
 		 * id        答题卡id
 		 * length    题目数量
 		 */
-		createAnswerSheet: function(id, length){
-			var div = document.createElement('div'),
+		createAnswerSheet: function(length){
+			var div = document.getElementById("answerSheet"),
 				// 视图缓存
 				html = ''
 			// 没有表头，第一行就是数据
@@ -223,9 +201,7 @@ MVC.view = function(){
 				html += `<div>${i}</div>`
 			}
 			div.innerHTML = html
-			div.id = "answerSheet"
 			view.answerSheet.element = div
-			document.getElementById(id).appendChild(div)
 			// 答题卡操作接口
 			return {
 				/**
@@ -282,10 +258,9 @@ MVC.ctrl = function(){
 		//初始化控制器
 		bindEvent: function(M, V){
 			// 创建答题卡模块
-			let id = V.getContainer().id,
-				length = M.iterator.getLength(),
+			let length = M.iterator.getLength(),
 				// 创建答题卡
-				sheet = V.createAnswerSheet(id, length),
+				sheet = V.createAnswerSheet(length),
 				// 获取dom元素,注意要先创建答题卡才能获取
 				answerSheet = V.getAnswerSheetView()
 				// 绑定题目模块的事件
