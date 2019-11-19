@@ -16,23 +16,14 @@ MVC.model = function(){
 	// 返回数据层接口
 	return {
 		// 匹配数据
-		matchData: function(result){
+		setData: function(result){
 			//去除表头
-			if (isNaN(result[0])){
+			if (result[0]){
 				result.shift()
 			}
-			var _this = this
-			result.forEach(function(item, index){
-				// 构造适合视图的数据
-				let data = {
-					id: parseInt(item[0]),
-					title: item[1].trim(),
-					list: [item[2], item[3], item[4], item[5]],
-					answer: item[6].trim().toUpperCase()
-				}
-				// 设置数据
-				_this.pushData(data)
-			})
+			for (let item of result) {
+				this.pushData(item)
+			}
 		},
 		/**
 		 * 添加题目数据
