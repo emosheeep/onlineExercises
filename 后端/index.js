@@ -12,8 +12,9 @@ app.use(function(req, resp, next){
 app.post("/question", function(req, resp){
 	console.log(req.body)
 	var filename = req.body.filename,
+		files = excel.getFileNames(),
 		data = null
-	for(let item of excel.files){
+	for(let item of files){
 		let pos = item.indexOf(filename)
 		if (pos != -1) {
 			// 说明当前文件名存在，直接使用item即可
@@ -35,7 +36,7 @@ app.post("/question", function(req, resp){
 })
 app.get("/files", function(req, resp){
 	resp.status(200)
-	resp.json(excel.files)
+	resp.json(excel.getFileNames())
 })
 // 404和500页面
 app.use(function(req, resp){

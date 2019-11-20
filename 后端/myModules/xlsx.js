@@ -29,21 +29,18 @@ function formatQuestion(data){
 
 // 读取目录下所有题库,该目录是相对于index.js的目录
 const dir = "./questions"
-var quesList = {}
-var files = fs.readdirSync(dir)
-
-function readFile(filename){
-	const workbook = xlsx.readFile(`${dir}/${filename}`),
-		sheetNames = workbook.SheetNames,
-		worksheet = workbook.Sheets[sheetNames[0]],
-		data = xlsx.utils.sheet_to_json(worksheet)
-	return formatQuestion(data)
-}
-
 
 module.exports = {
-	files: files,
-	readFile: readFile
+	getFileNames: function(){
+		return fs.readdirSync(dir)
+	},
+	readFile: function(filename){
+		const workbook = xlsx.readFile(`${dir}/${filename}`),
+			sheetNames = workbook.SheetNames,
+			worksheet = workbook.Sheets[sheetNames[0]],
+			data = xlsx.utils.sheet_to_json(worksheet)
+		return formatQuestion(data)
+	}
 }
 	
 

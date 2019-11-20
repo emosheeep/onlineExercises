@@ -92,17 +92,14 @@ var ulClickHandler = function(event){
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(`filename=${file}`)
 	}
-	// 关闭题库面板
-	$(ul).slideToggle(200)
-	$("#answerSheet").css("visibility","visible")
 }
 // 题库列表绑定事件,事件委托
 ul.addEventListener("click", debounce(ulClickHandler, 150), false)
-ul.addEventListener("mousedown", function(event){
-	event.target.classList.add("active")
-}, false)
-ul.addEventListener("mouseup", function(event){
-	event.target.classList.remove("active")
+ul.addEventListener("click", function(event){
+	$(event.target).addClass("active").siblings().removeClass("active")
+	// 关闭题库面板
+	$(ul).slideToggle(200)
+	$("#answerSheet").css("visibility","visible")
 }, false)
 var btnClickHandler = function(event){
 	$(ul).slideToggle(200)
