@@ -60,6 +60,7 @@ xhr.onreadystatechange = function(){
 xhr.open('get', "http://localhost:3000/files")
 xhr.send(null)
 
+// 题库按钮的点击事件
 var ulClickHandler = function(event){
 	var target = event.target,
 		file = target.innerText
@@ -98,12 +99,10 @@ var ulClickHandler = function(event){
 // 题库列表绑定事件,事件委托
 ul.addEventListener("click", debounce(ulClickHandler, 150), false)
 ul.addEventListener("mousedown", function(event){
-	var target = event.target
-	target.classList.add("active")
+	event.target.classList.add("active")
 }, false)
 ul.addEventListener("mouseup", function(event){
-	var target = event.target
-	target.classList.remove("active")
+	event.target.classList.remove("active")
 }, false)
 var btnClickHandler = function(event){
 	$(ul).slideToggle(200)
