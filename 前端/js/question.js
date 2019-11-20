@@ -7,21 +7,30 @@ MVC.model = function(){
 		data: [],
 		// 保存题目状态,即答题卡数据
 		state: {},
+		//保存正误数量
+		score: {
+			right: 0,
+			wrong: 0
+		},
 		// 保存当前题目数据
-		current: null,
-		
+		current: null
 	},
 	// 当前索引值，默认为0
 	index = 0
 	// 返回数据层接口
 	return {
+		// 重置数据对象
+		reset: function(){
+			Question.data.splice(0)
+			Question.state = {}
+			Question.current = null
+		},
 		// 匹配数据
 		setData: function(result){
 			//去除表头
-			if (typeof result[0].id != "number"){
+			if (typeof result[0].id !== "number"){
 				result.shift()
 			}
-			console.log(result)
 			for (let item of result) {
 				this.pushData(item)
 			}
@@ -32,7 +41,6 @@ MVC.model = function(){
 		 */
 		pushData: function(value){
 			Question.data.push(value)
-			return this
 		},
 		/**
 		 * 题目迭代器
@@ -90,6 +98,13 @@ MVC.model = function(){
 			Question.state[key] = value
 			return this
 		},
+		setScore: function(flag){
+			if (flag) {
+				Question.score.right++
+			} else {
+				Question.score.wrong++
+			}
+		},
 		/**
 		 * 获取题目状态数据
 		 * @param {Object} key  题目序号
@@ -99,6 +114,9 @@ MVC.model = function(){
 		},
 		getCurrent: function(){
 			return Question.current
+		},
+		getScore: function(){
+			return Question.score
 		}
 	}
 }()
@@ -106,7 +124,6 @@ MVC.model = function(){
 MVC.view = function(){
 	// 保存dom组件
 	var view = {
-		container: null,
 		question: {
 			id: null,
 			title: null,
@@ -117,20 +134,33 @@ MVC.view = function(){
 		answerSheet: {
 			element: null,
 			preEle: null
-		}
+		},
+		scoreEle: null
 	}
 	return {
+		//重置视图
+		reset: function(){
+			let q = view.question
+			q.preBtn && (q.preBtn.onclick = null)
+			q.nextBtn && (q.nextBtn.onclick = null)
+			// 清除掉分数标签内容
+			if (view.scoreEle){
+				for (let item of view.scoreEle.children) {
+					item.innerText = 0
+				}
+			}
+		},
 		/**
 		 * 初始化视图
 		 */
-		init: function(id){
+		init: function(){
 			// 缓存视图组件
-			view.container = document.getElementById(id)
-			view.question.id = document.getElementById("id") //题目
-			view.question.title = document.getElementById("title") //题目
-			view.question.list = document.getElementById("list")  //选项列表
+			view.question.id = document.getElementById("quesId")      //题目ID
+			view.question.title = document.getElementById("title")    //题目
+			view.question.list = document.getElementById("list")      //选项列表
 			view.question.preBtn = document.getElementById("preBtn")  //上一题按钮
 			view.question.nextBtn = document.getElementById("nextBtn")//下一题按钮
+			view.scoreEle = document.getElementById("score")          //分数标签
 		},
 		/**
 		 * 渲染题目数据
@@ -244,9 +274,10 @@ MVC.view = function(){
 		getAnswerSheetView: function(){
 			return view.answerSheet.element
 		},
-		// 获取答题卡视图组件,外部绑定事件
-		getContainer: function(){
-			return view.container
+		// 更新分数视图
+		setScore: function(score){
+			view.scoreEle.children[0].innerText = score.right
+			view.scoreEle.children[1].innerText = score.wrong
 		}
 	}
 }()
@@ -255,6 +286,14 @@ MVC.ctrl = function(){
 	var M = MVC.model,
 	V = MVC.view,
 	C = {
+		//初始化试图视图模型
+		viewInit: function(M, V){
+			V.init()
+			// 重置颜色
+			V.resetColor()
+			// 首次渲染题目
+			V.showQuestion(M.iterator.first())
+		},
 		//初始化控制器
 		bindEvent: function(M, V){
 			// 创建答题卡模块
@@ -290,6 +329,10 @@ MVC.ctrl = function(){
 					}
 					// 添加做题记录
 					M.setState(currentQuestion.id, judgeResult)
+					//更新分数数据
+					M.setScore(judgeResult.status)
+					//更新分数视图
+					V.setScore(M.getScore())
 					// 触发之后移除事件防止多次触发
 					question.list.onclick = null
 			}
@@ -340,12 +383,12 @@ MVC.ctrl = function(){
 				checkState(data.id)
 				sheet.current(data.id - 1)
 			}
-			question.nextBtn.addEventListener("click", function(){
+			question.nextBtn.onclick = function(){
 				btnHandler.call(null, M, V, M.iterator.next())
-			}, true)
-			question.preBtn.addEventListener("click", function(){
+			}
+			question.preBtn.onclick = function(){
 				btnHandler.call(null, M, V, M.iterator.pre())
-			}, true)
+			}
 		}
 	}
 	return {

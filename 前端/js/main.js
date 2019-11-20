@@ -1,4 +1,18 @@
 /**
+ * 事件防抖函数
+ */
+function debounce(fn, wait) {    
+    var timeout = null
+    return function(event) {        
+        if(timeout !== null){
+			clearTimeout(timeout)
+		}        
+        timeout = setTimeout(function(){
+			fn.call(null, event)
+		}, wait)   
+    }
+}
+/**
  * 作为回调函数,该部分是逻辑控制的核心
  * @param {Object} result   文件读取成功后的数据
  */
@@ -8,17 +22,15 @@ var main = function(data){
 		// 视图管理对象
 		view = MVC.view,
 		ctrl = MVC.ctrl
-
 	if (!data){
 		alert("未获取到数据!")
 		return
 	}
+	//重置数据对象
+	model.reset()
+	view.reset()
 	//构造并初始化数据模型题目数据
 	model.setData(data)
-	//初始化试图视图模型
-	view.init("container")
-	// 首次渲染题目
-	view.showQuestion(model.iterator.first())
 	//执行控制器
 	ctrl.init()
 	
@@ -48,8 +60,7 @@ xhr.onreadystatechange = function(){
 xhr.open('get', "http://localhost:3000/files")
 xhr.send(null)
 
-// 题库列表绑定事件,事件委托
-ul.onclick = function(event){
+var ulClickHandler = function(event){
 	var target = event.target,
 		xhr = new XMLHttpRequest(),
 		file = target.innerText
@@ -71,4 +82,20 @@ ul.onclick = function(event){
 	xhr.open('post', "http://localhost:3000/question")
 	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	xhr.send(`filename=${file}`)
+	$(ul).slideToggle(200)
+	$("#answerSheet").css("visibility","visible")
 }
+// 题库列表绑定事件,事件委托
+ul.addEventListener("click", debounce(ulClickHandler, 150), false)
+ul.addEventListener("mousedown", function(event){
+	var target = event.target
+	target.classList.add("active")
+}, false)
+ul.addEventListener("mouseup", function(event){
+	var target = event.target
+	target.classList.remove("active")
+}, false)
+var btnClickHandler = function(event){
+	$(ul).slideToggle(200)
+}
+btn.onclick = debounce(btnClickHandler, 200)

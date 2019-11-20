@@ -4,6 +4,11 @@ var excel = require("./myModules/xlsx.js")
 var bodyParser = require('body-parser')
 
 app.use(bodyParser.urlencoded({extended:false}))
+// 解决跨域问题
+app.use(function(req, resp, next){
+	resp.set("Access-Control-Allow-Origin","*")
+	next()
+})
 app.post("/question", function(req, resp){
 	console.log(req.body)
 	var filename = req.body.filename,
@@ -33,6 +38,7 @@ app.get("/files", function(req, resp){
 	resp.status(200)
 	resp.json(excel.files)
 })
+// 404和500页面
 app.use(function(req, resp){
 	resp.type('text/plain')
 	resp.status(404)
