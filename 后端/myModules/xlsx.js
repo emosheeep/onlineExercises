@@ -31,19 +31,19 @@ function formatQuestion(data){
 const dir = "./questions"
 var quesList = {}
 var files = fs.readdirSync(dir)
-files.forEach(function(item){
-	const workbook = xlsx.readFile(`${dir}/${item}`),
+
+function readFile(filename){
+	const workbook = xlsx.readFile(`${dir}/${filename}`),
 		sheetNames = workbook.SheetNames,
 		worksheet = workbook.Sheets[sheetNames[0]],
 		data = xlsx.utils.sheet_to_json(worksheet)
-	
-	// 保存题库
-	quesList[item] = formatQuestion(data)
-})
+	return formatQuestion(data)
+}
+
 
 module.exports = {
 	files: files,
-	quesList: quesList
+	readFile: readFile
 }
 	
 

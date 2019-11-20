@@ -17,10 +17,9 @@ app.post("/question", function(req, resp){
 		let pos = item.indexOf(filename)
 		if (pos != -1) {
 			// 说明当前文件名存在，直接使用item即可
-			data = excel.quesList[item]
+			data = excel.readFile(item)
 			break
 		}
-		 
 	}
 	if (data) {
 		resp.json({
