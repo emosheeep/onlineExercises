@@ -62,26 +62,36 @@ xhr.send(null)
 
 var ulClickHandler = function(event){
 	var target = event.target,
-		xhr = new XMLHttpRequest(),
 		file = target.innerText
 	// 过滤事件
 	if(target.parentNode != ul){
 		return
 	}
-	xhr.onreadystatechange = function(){
-		if(xhr.readyState == 4 && xhr.status == 200){
-			let result = JSON.parse(xhr.responseText)
-			console.log(result)
-			if (result.success) {
-				main(result.data)
-			} else {
-				main(null)
+	// 检查本地有没有缓存当前题目信息
+	var storage = window.sessionStorage,
+		data = storage.getItem(file)
+	if (data) {
+		main(JSON.parse(data))
+	} else {
+		// 如果本地不存在则从服务器获取数据
+		var xhr = new XMLHttpRequest()
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				let result = JSON.parse(xhr.responseText)
+				if (result.success) {
+					main(result.data)
+					// 将数据缓存到本地,以便下次访问
+					storage.setItem(file, JSON.stringify(result.data))
+				} else {
+					main(null)
+				}
 			}
 		}
+		xhr.open('post', "http://localhost:3000/question")
+		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhr.send(`filename=${file}`)
 	}
-	xhr.open('post', "http://localhost:3000/question")
-	xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhr.send(`filename=${file}`)
+	// 关闭题库面板
 	$(ul).slideToggle(200)
 	$("#answerSheet").css("visibility","visible")
 }
