@@ -6,6 +6,7 @@ const QUESTION = "http://47.102.206.14:3000/question"
 //本地接口
 // const FILES = "http://localhost:3000/files"
 // const QUESTION = "http://47.102.206.14:3000/question"
+var storage = window.sessionStorage
 /**
  * 事件防抖函数
  */
@@ -44,29 +45,47 @@ var main = function(data){
 	
 }
 
-let btn = document.getElementById("load"),
+var btn = document.getElementById("load"),
 	ul = document.getElementById("toLoad")
-var xhr = new XMLHttpRequest()
-xhr.onreadystatechange = function(){
-	if(xhr.readyState == 4 && xhr.status == 200){
-		let files = JSON.parse(xhr.responseText)
-		files = files.map(function(item){
-			// 保留文件名
-			return item.slice(0,item.indexOf("."))
-		})
-		let fragment = document.createDocumentFragment()
-		// 创建题目列表选项
-		files.forEach(function(item){
-			let li = document.createElement('li')
-			li.title = item
-			li.innerText = item
-			fragment.appendChild(li)
-		})
-		ul.appendChild(fragment)
-	}
+// 设置题库列表
+var setList = function(files){
+	let fragment = document.createDocumentFragment()
+	// 创建题目列表选项
+	files.forEach(function(item){
+		let li = document.createElement('li')
+		li.title = item
+		li.innerText = item
+		fragment.appendChild(li)
+	})
+	ul.appendChild(fragment)
 }
-xhr.open('get', FILES)
-xhr.send(null)
+$(function(){
+	var files = storage.getItem("quesList")
+	files = JSON.parse(files)
+	if (!files) {
+		let xhr = new XMLHttpRequest()
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState == 4 && xhr.status == 200){
+				// 先转化为对象
+				files = JSON.parse(xhr.responseText)
+				// 再重新定义数据
+				files = files.map(function(item){
+					// 去除文件后缀名
+					return item.slice(0,item.indexOf("."))
+				})
+				storage.setItem("quesList", JSON.stringify(files))
+				setList(files)  // 渲染列表
+			}
+		}
+		xhr.onerror = function(err){
+			console.error(err)
+		}
+		xhr.open('get', FILES)
+		xhr.send(null)
+	} else {
+		setList(files)  // 渲染题目列表
+	}
+})
 
 // 题库按钮的点击事件
 var ulClickHandler = function(event){
@@ -77,8 +96,7 @@ var ulClickHandler = function(event){
 		return
 	}
 	// 检查本地有没有缓存当前题目信息
-	var storage = window.sessionStorage,
-		data = storage.getItem(file)
+	var	data = storage.getItem(file)
 	if (data) {
 		main(JSON.parse(data))
 	} else {
