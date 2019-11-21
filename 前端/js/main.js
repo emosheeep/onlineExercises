@@ -1,4 +1,12 @@
 /**
+ * 服务器接口
+ */
+const FILES = "http://47.102.206.14:3000/files"
+const QUESTION = "http://47.102.206.14:3000/question"
+//本地接口
+// const FILES = "http://localhost:3000/files"
+// const QUESTION = "http://47.102.206.14:3000/question"
+/**
  * 事件防抖函数
  */
 function debounce(fn, wait) {    
@@ -57,7 +65,7 @@ xhr.onreadystatechange = function(){
 		ul.appendChild(fragment)
 	}
 }
-xhr.open('get', "http://localhost:3000/files")
+xhr.open('get', FILES)
 xhr.send(null)
 
 // 题库按钮的点击事件
@@ -88,7 +96,7 @@ var ulClickHandler = function(event){
 				}
 			}
 		}
-		xhr.open('post', "http://localhost:3000/question")
+		xhr.open('post', QUESTION)
 		xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 		xhr.send(`filename=${file}`)
 	}
