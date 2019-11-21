@@ -77,9 +77,6 @@ $(function(){
 				setList(files)  // 渲染列表
 			}
 		}
-		xhr.onerror = function(err){
-			console.error(err)
-		}
 		xhr.open('get', FILES)
 		xhr.send(null)
 	} else {
