@@ -3,38 +3,47 @@
 	<head>
 		<meta charset="utf-8">
 		<title>在线刷题</title>
-		<link rel="stylesheet" type="text/css" href="css/main.css"/>
+		<link rel="stylesheet" type="text/css" href="css/normalize.css"/>
 		<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
 		<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>
 	</head>
 	<body>
-		<div id="container">
-			<div class="leftBar">
-				<ul id="toLoad"></ul>
-				<div id="answerSheet"></div>
+		<div class="page-head row defalut">
+			<h3>在线答题题库</h1>
+		</div>	
+		<div class="row page-body">
+			<div class="col-md-3 col-sm-3 col-lg-3 page-body-leftBar defalut">
+				<button id="load" class="btn btn-info">选择题库</button>
 			</div>
-			<div id="questionBox" class="panel panel-default">
-				<div class="panel-heading header">
-					<div><span id="quesId">1</span><span id="title">loading</span></div>
+			<div id="container" class="col-md-9 col-sm-9 col-lg-9 row">
+				<div class="col-md-4 col-sm-4 col-lg-4 leftBar">
+					<ul id="toLoad"></ul>
+					<div id="answerSheet"></div>
 				</div>
-				<ol id="list" type="A" class="panel-body body">
-					<li answer="A">loading</li>
-					<li answer="B">loading</li>
-					<li answer="C">loading</li>
-					<li answer="D">loading</li>
-				</ol>
-				<div class="panel-footer footer">
-					<button id="preBtn" class="btn btn-default">上一题</button>
-					<button id="nextBtn" class="btn btn-default">下一题</button>
-					<div id="score">
-						<span class="badge bg_success">0</span>
-						<span class="badge bg_failed">0</span>
+				<div id="questionBox" class="col-md-8 col-sm-8 col-lg-8 panel panel-default">
+					<div class="panel-heading header">
+						<div><span id="quesId">1</span><span id="title">loading...</span></div>
 					</div>
-					<button id="load" class="btn btn-info pull-right">题库</button>
+					<ol id="list" type="A" class="panel-body body">
+						<li answer="A">loading...</li>
+						<li answer="B">loading...</li>
+						<li answer="C">loading...</li>
+						<li answer="D">loading...</li>
+					</ol>
+					<div class="panel-footer footer">
+						<button id="preBtn" class="btn btn-default">上一题</button>
+						<button id="nextBtn" class="btn btn-default">下一题</button>
+						<div id="score">
+							<span class="badge bg_success">0</span>
+							<span class="badge bg_failed">0</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
+		<div class="page-foot row"></div>
 	</body>
 	<script src="js/question.js"></script>
 	<script src="js/main.js"></script>
