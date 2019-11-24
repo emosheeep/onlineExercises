@@ -1,3 +1,21 @@
-### 项目介绍
-该分支在主分支的基础上新增了nodejs的后台功能，并重新对前端界面进行了布局，项目中两个文件夹分别是前端和后端的项目文件夹
-具体介绍请查看项目内的readme文件。
+# exercises
+
+> 在线做题网站
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
