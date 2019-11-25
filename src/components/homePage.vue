@@ -1,10 +1,13 @@
 <template>
   <el-container>
-    <el-aside>
-      <el-button v-for="(item, index) in fileList" :key="index"
-        @click="switchQuestion(item)">
-        {{item}}
-      </el-button>
+    <el-aside class="side">
+      <ul id="toLoad">
+        <li v-for="(item, index) in fileList" :key="index"
+            :class="{active: item === curListItem}"
+            @click="switchQuestion(item)">
+          {{item}}
+        </li>
+      </ul>
     </el-aside>
     <el-main class="main">
       <question :questions="questions" :name="curListItem"
@@ -27,7 +30,8 @@ export default {
       fileList: [],
       curListItem: '',
       loading: true,
-      loadingText: '请先选择题库'
+      loadingText: '请先选择题库',
+      curIndex: null
     }
   },
   methods: {
@@ -65,7 +69,7 @@ export default {
           _this.$message({
             message: '加载成功',
             type: 'success',
-            duration: 1500,
+            duration: 1200,
             center: true
           })
         }
@@ -96,7 +100,34 @@ export default {
       width 7px
       border-radius 5px
       background-color rgba(231,234,237, 0.5)
+  .active
+    background-color lightblue !important
   .main
     scrollBar()
     padding-top 0
+  .side
+    scrollBar()
+    border 1px solid rgb(221, 221, 221)
+    border-radius 5px
+  ul#toLoad
+    font-size 18px
+    list-style none
+    background-color white
+    & li
+      margin 5px 0
+      padding 0 5px
+      border-radius 5px
+      cursor pointer
+      height 40px
+      line-height 40px
+      /* 超出部分省略号代替 */
+      text-overflow ellipsis
+      white-space nowrap
+      overflow hidden
+      /* 防止点击时选中文本,影响体验*/
+      -ms-user-select none
+      -moz-user-select none
+      -webkit-user-select none
+      &:hover
+        background-color rgb(245,245,245)
 </style>
