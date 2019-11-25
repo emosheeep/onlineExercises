@@ -24,10 +24,17 @@
           <el-badge :value="wrongSum"></el-badge>
         </el-col>
         <el-col :span="6">
-          <el-button plain type="primary">显示答题卡</el-button>
+          <el-button plain type="primary" @click="drawer = true">显示答题卡</el-button>
         </el-col>
       </el-row>
     </el-footer>
+    <el-drawer direction="rtl" size="313px" :visible.sync="drawer" :title="name">
+      <div id="answerSheet">
+        <div v-for="(item, index) in this.questions" :key="index">
+          {{item.id}}
+        </div>
+      </div>
+    </el-drawer>
   </el-container>
 </template>
 
@@ -35,10 +42,13 @@
 export default {
   name: 'Question',
   props: {
-    questions: Array
+    questions: Array,
+    name: String
   },
   data () {
     return {
+      // 控制答题卡的显示
+      drawer: false,
       answer: ['A', 'B', 'C', 'D'],
       // 题目是否已经答过
       Answered: false,
@@ -123,27 +133,6 @@ export default {
         this.$set(this.curState, rightAns, 'success')
         return false
       }
-    },
-    leave (newVal, oldVal) {
-      this.$confirm('还没做完，确认切换？题目记录将会保存。', '提示', {
-        confirmButtonText: '确认切换',
-        cancelButtonText: '继续做题',
-        type: 'warning'
-      }).then(() => {
-        this.current = newVal // 切换题目
-        this.$message({
-          message: '切换成功',
-          type: 'success',
-          duration: 1500,
-          center: true
-        })
-        // 重置正误数量
-        this.rightSum = 0
-        this.wrongSum = 0
-      }).catch(() => {
-        // 否则将localQuestion重置为之前的值，否则之后点击切换题目将不会触发监听
-        // this.localQuestions = oldVal
-      })
     }
   },
   watch: {
@@ -167,6 +156,20 @@ export default {
   $grey = rgb(245,245,245)
   $green = rgb(223,240,216)
   $red = rgb(242,222,222)
+  scrollBar()
+    overflow auto
+    &::-webkit-scrollbar-button
+      display none
+    &::-webkit-scrollbar-thumb
+      border-radius 5px
+      background-color rgba(168,168,168, 0.5)
+    &::-webkit-scrollbar-thumb:hover
+      background-color rgba(168,168,168, 0.8)
+    &::-webkit-scrollbar
+      height 7px
+      width 7px
+      border-radius 5px
+      background-color rgba(231,234,237, 0.5)
   .el-header
     padding 10px 15px
     font-size 18px
@@ -222,4 +225,39 @@ export default {
     background-color $red!important
   .active
     background-color lightblue!important
+  #answerSheet
+    margin 0
+    display flex
+    flex-wrap wrap
+    height inherit
+    width inherit
+    border-radius 3px 0 0 3px
+    & div
+      height: 30px
+      width: 30px
+      line-height 30px
+      text-align center
+      cursor pointer
+      outline 1px solid rgb(245,245,245)
+      &:hover
+        background-color rgb(217,237,247)
+  >>> #el-drawer__title
+    font-size 18px
+  >>> .el-drawer__body
+    border 1px rgb(221,221,221) solid
+    overflow auto
+    &::-webkit-scrollbar-button
+      display none
+    &::-webkit-scrollbar-thumb
+      border-radius 5px
+      background-color rgba(168,168,168, 0.5)
+    &::-webkit-scrollbar-thumb:hover
+      background-color rgba(168,168,168, 0.8)
+    &::-webkit-scrollbar
+      height 7px
+      width 7px
+      border-radius 5px
+      background-color rgba(231,234,237, 0.5)
+    &::-webkit-scrollbar-track
+      border-radius 5px
 </style>

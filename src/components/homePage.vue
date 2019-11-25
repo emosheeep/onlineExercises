@@ -7,7 +7,7 @@
       </el-button>
     </el-aside>
     <el-main class="main">
-      <question :questions="questions"
+      <question :questions="questions" :name="curListItem"
                 :element-loading-text="loadingText"
                 v-loading="loading">
       </question>
@@ -87,17 +87,15 @@ export default {
     &::-webkit-scrollbar-button
       display none
     &::-webkit-scrollbar-thumb
-      background-color #ADD8E6
       border-radius 5px
       background-color rgba(168,168,168, 0.5)
-      transition all 200ms ease-in-out
     &::-webkit-scrollbar-thumb:hover
       background-color rgba(168,168,168, 0.8)
     &::-webkit-scrollbar
       height 7px
-      weight 7px
-      background-color rgba(231,234,237, 0.5)
+      width 7px
       border-radius 5px
+      background-color rgba(231,234,237, 0.5)
   .main
     scrollBar()
     padding-top 0
