@@ -11,7 +11,7 @@ export default {
   },
   [methods.RECEIVE_QUESTION] (state, data) {
     if (data.success) {
-      state.questions[data.name] = data.data
+      state.questions[data.filename] = data.data
     }
   }
 }
