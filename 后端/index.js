@@ -7,7 +7,13 @@ app.use(bodyParser.urlencoded({extended:false}))
 // 解决跨域问题
 app.use(function(req, resp, next){
 	resp.set("Access-Control-Allow-Origin","*")
-	next()
+    resp.set("Access-Control-Allow-Headers", "Content-Type,Content-Length")
+    resp.set("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS")
+    if (req.method=="OPTIONS") {
+    	resp.status(200)
+    	resp.end()
+    }
+    else  next()
 })
 app.post("/question", function(req, resp){
 	console.log(req.body)
@@ -25,6 +31,7 @@ app.post("/question", function(req, resp){
 	if (data) {
 		resp.json({
 			success: true,
+			filename: filename,
 			data: data
 		})
 	} else {
