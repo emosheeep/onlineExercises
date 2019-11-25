@@ -14,15 +14,19 @@
       </li>
     </ol>
     <el-footer class="default">
-      <div class="footer">
-        <el-button id="preBtn" @click="iterator.pre()">上一题</el-button>
-        <el-button id="nextBtn" @click="iterator.next()">下一题</el-button>
-        <div id="score">
+      <el-row class="footer" :gutter="20">
+        <el-col :span="10">
+          <el-button @click="iterator.pre()">上一题</el-button>
+          <el-button @click="iterator.next()">下一题</el-button>
+        </el-col>
+        <el-col :span="8" id="score">
           <el-badge :value="rightSum" type="success"></el-badge>
           <el-badge :value="wrongSum"></el-badge>
-        </div>
-        <el-button>显示答题卡</el-button>
-      </div>
+        </el-col>
+        <el-col :span="6">
+          <el-button plain type="primary">显示答题卡</el-button>
+        </el-col>
+      </el-row>
     </el-footer>
   </el-container>
 </template>
@@ -119,12 +123,36 @@ export default {
         this.$set(this.curState, rightAns, 'success')
         return false
       }
+    },
+    leave (newVal, oldVal) {
+      this.$confirm('还没做完，确认切换？题目记录将会保存。', '提示', {
+        confirmButtonText: '确认切换',
+        cancelButtonText: '继续做题',
+        type: 'warning'
+      }).then(() => {
+        this.current = newVal // 切换题目
+        this.$message({
+          message: '切换成功',
+          type: 'success',
+          duration: 1500,
+          center: true
+        })
+        // 重置正误数量
+        this.rightSum = 0
+        this.wrongSum = 0
+      }).catch(() => {
+        // 否则将localQuestion重置为之前的值，否则之后点击切换题目将不会触发监听
+        // this.localQuestions = oldVal
+      })
     }
   },
   watch: {
-    // 监听数据变化，有数据传入时初始化
+    // 监听外部数据变化，有数据传入时初始化
     questions (newVal) {
       this.current = newVal[0]
+      // 重置正误数量
+      this.rightSum = 0
+      this.wrongSum = 0
     },
     // 题目变化时自定设置答题状态，并清空颜色
     current () {
@@ -140,7 +168,7 @@ export default {
   $green = rgb(223,240,216)
   $red = rgb(242,222,222)
   .el-header
-    padding 10px 20px
+    padding 10px 15px
     font-size 18px
     height auto!important
   .footer
@@ -183,6 +211,8 @@ export default {
         content "D. "
   #quesId::after
     content ". "
+  #score div
+    margin 0 15px
   /*答题正误样式*/
   .default
     background-color $grey

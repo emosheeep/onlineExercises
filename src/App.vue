@@ -9,7 +9,6 @@ export default {
   name: 'App',
   mounted () {
     this.$store.dispatch('RECEIVE_FILES')
-    this.$store.dispatch('RECEIVE_QUESTION', '知识竞赛题库')
   }
 }
 </script>
