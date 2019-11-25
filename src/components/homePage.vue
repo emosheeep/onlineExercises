@@ -1,8 +1,16 @@
 <template>
-  <div>
-    <question :questions="questions"></question>
-    <el-button @click="send">安全知识问答</el-button>
-  </div>
+  <el-container>
+    <el-aside>
+      <el-card v-for="(item, index) in fileList" :key="index"
+      shadow="hover"
+      @click.native="send(item)">
+        {{item}}
+      </el-card>
+    </el-aside>
+    <el-main>
+      <question :questions="questions"></question>
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -11,21 +19,22 @@ export default {
   name: 'homePage',
   data () {
     return {
-      questions: []
+      questions: [],
+      // 保存题目列表
+      fileList: []
     }
   },
   components: {
     Question
   },
   methods: {
-    send () {
-      this.questions = this.$store.state.questions['安全知识问答']
+    send (filename) {
+      console.log(filename)
+      this.questions = this.$store.state.questions[filename]
     }
   },
-  computed: {
-    question () {
-      return this.$store.state.questions['安全知识问答']
-    }
+  mounted () {
+    this.fileList = this.$store.state.fileList
   }
 }
 </script>

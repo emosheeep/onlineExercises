@@ -119,9 +119,6 @@ export default {
         this.$set(this.curState, rightAns, 'success')
         return false
       }
-    },
-    switchQuestion (event) {
-      this.current = this.questions[1]
     }
   },
   watch: {
@@ -150,7 +147,6 @@ export default {
     height inherit
     line-height 60px
   #questionBox
-    margin-left 20px
     width 600px
     min-width 350px
     min-height 350px
