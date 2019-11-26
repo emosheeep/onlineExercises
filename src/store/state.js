@@ -3,6 +3,6 @@
  */
 export default {
   questions: {}, // 题库数据
-  ques_state: {}, // 答题记录
-  fileList: []
+  state: {}, // 答题记录
+  fileList: [] // 题库列表
 }
