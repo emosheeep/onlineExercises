@@ -16,15 +16,18 @@
     <el-footer class="default">
       <el-row class="footer" :gutter="20">
         <el-col :span="10">
-          <el-button @click="iterator.pre()">上一题</el-button>
-          <el-button @click="iterator.next()">下一题</el-button>
+          <el-button-group>
+            <el-button icon="el-icon-arrow-left" @click="iterator.pre()">上一题</el-button>
+            <el-button @click="iterator.next()">下一题<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          </el-button-group>
         </el-col>
-        <el-col :span="8" id="score">
+        <el-col :span="4" id="score">
           <el-badge :value="curSum.rightSum" type="success"></el-badge>
           <el-badge :value="curSum.wrongSum"></el-badge>
         </el-col>
-        <el-col :span="6">
-          <el-button plain type="primary" @click="drawer = true">显示答题卡</el-button>
+        <el-col :span="10">
+          <el-button type="warning" plain icon="el-icon-refresh-right">重做</el-button>
+          <el-button type="primary" plain @click="drawer = true">显示答题卡</el-button>
         </el-col>
       </el-row>
     </el-footer>
@@ -185,7 +188,7 @@ export default {
       } else return false
     },
     // 初始化答题卡数据
-    init () {
+    initAnswerSheet () {
       let record = this.$store.getters.getState(this.name)
       let sum = record && record.sum
       // 重置正误数量
@@ -208,7 +211,7 @@ export default {
     // 监听外部数据变化，有题目传入时初始化
     questions () {
       this.iterator.first() // 注意不能直接修改current，会破坏索引秩序
-      this.init()
+      this.initAnswerSheet()
     },
     // 题目变化时自定设置答题状态
     current (newVal) {
@@ -255,8 +258,6 @@ export default {
     display flex
     flex-direction column
     justify-content space-between
-  #score
-    display inline-block
   ol#list
     padding 10px
     font-size 18px
@@ -282,8 +283,10 @@ export default {
         content "D. "
   #quesId::after
     content ". "
-  #score div
-    margin 0 15px
+  #score
+    display inline-block
+    div
+      margin 0 7px
   /*答题正误样式*/
   .default
     background-color $grey

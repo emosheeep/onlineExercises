@@ -105,6 +105,7 @@ export default {
   .main
     scrollBar()
     padding-top 0
+    padding-bottom 0
   .side
     scrollBar()
     border 1px solid rgb(221, 221, 221)
