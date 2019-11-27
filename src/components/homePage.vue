@@ -1,22 +1,34 @@
 <template>
-  <el-container>
-    <el-aside class="side" v-loading="listLoading"
-              :element-loading-text="listLoadingText">
-      <ul id="toLoad">
-        <li v-for="(item, index) in fileList" :key="index"
-            :class="{active: item === curListItem}"
-            @click="switchQuestion(item)">
-          {{item}}
-        </li>
-      </ul>
-    </el-aside>
-    <el-main class="main">
-      <question :questions="questions" :name="curListItem"
-                element-loading-spinner="none"
-                :element-loading-text="loadingText"
-                v-loading="loading">
-      </question>
-    </el-main>
+  <el-container class="container">
+    <el-header class="header">
+        <el-menu mode="horizontal"
+                 background-color="#545c64"
+                 text-color="#fff"
+                 active-text-color="#ffd04b">
+          <el-menu-item index="1">
+            <el-popover trigger="click" placement="bottom" v-model="visible">
+              <ul id="toLoad" @click="visible = false"
+                  :element-loading-text="listLoadingText"
+                  v-loading="listLoading">
+                <li v-for="(item, index) in fileList" :key="index"
+                    :class="{active: item === curListItem}"
+                    :title="item"
+                    @click="switchQuestion(item)">{{item}}</li>
+              </ul>
+              <p slot="reference">选择题库</p>
+            </el-popover>
+          </el-menu-item>
+        </el-menu>
+    </el-header>
+    <el-container class="ques-container">
+      <el-main class="main">
+        <question :questions="questions" :name="curListItem"
+                  element-loading-spinner="none"
+                  :element-loading-text="loadingText"
+                  v-loading="loading">
+        </question>
+      </el-main>
+    </el-container>
   </el-container>
 </template>
 
@@ -35,7 +47,7 @@ export default {
       loadingText: '请先选择题库',
       listLoading: true,
       listLoadingText: '正在加载, 请稍等...',
-      curIndex: null
+      visible: false
     }
   },
   methods: {
@@ -114,17 +126,11 @@ export default {
       background-color rgba(231,234,237, 0.5)
   .active
     background-color lightblue !important
-  .main
-    scrollBar()
-    padding-top 0
-    padding-bottom 0
-  .side
-    scrollBar()
-    border 1px solid rgb(221, 221, 221)
-    border-radius 5px
   ul#toLoad
     font-size 18px
     list-style none
+    height 300px
+    overflow auto
     background-color white
     & li
       margin 5px 0
@@ -143,4 +149,15 @@ export default {
       -webkit-user-select none
       &:hover
         background-color rgb(245,245,245)
+  .container
+    min-width 100%
+  .ques-container
+    outline 1px solid rgb(221, 221, 221)
+    max-width 600px
+    margin 0 auto
+  .main
+    scrollBar()
+    padding 0
+  .header
+    padding 0
 </style>

@@ -14,18 +14,18 @@
       </li>
     </ol>
     <el-footer class="default">
-      <el-row class="footer" :gutter="20">
-        <el-col :span="10">
+      <el-row class="footer">
+        <el-col :span="10" :xs="16">
           <el-button-group>
             <el-button icon="el-icon-arrow-left" @click="iterator.pre()">上一题</el-button>
             <el-button @click="iterator.next()">下一题<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </el-button-group>
         </el-col>
-        <el-col :span="4" id="score">
+        <el-col :span="4" id="score" :xs="8">
           <el-badge :value="curSum.rightSum" type="success"></el-badge>
           <el-badge :value="curSum.wrongSum"></el-badge>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="10" :xs="18">
           <el-button type="warning" plain
                      icon="el-icon-refresh-right"
                      @click="reWork">重做</el-button>
@@ -288,14 +288,14 @@ export default {
     font-size 18px
     height auto!important
   .footer
-    height inherit
+    height auto
     line-height 60px
   #questionBox
-    width 600px
+    width 100%
+    margin 0 auto
     min-width 350px
     min-height 350px
-    border-radius 5px
-    border 2px $grey solid
+    border 1px $grey solid
     text-align left
     display flex
     flex-direction column
@@ -373,4 +373,12 @@ export default {
       background-color rgba(231,234,237, 0.5)
     &::-webkit-scrollbar-track
       border-radius 5px
+  #questionBox
+    width 600px
+  @media (max-width: 500px)
+    #questionBox
+      width auto
+      min-height 600px
+    >>> .el-footer
+      height auto !important
 </style>
