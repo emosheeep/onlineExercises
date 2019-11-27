@@ -29,7 +29,8 @@
           <el-button type="warning" plain
                      icon="el-icon-refresh-right"
                      @click="reWork">重做</el-button>
-          <el-button type="primary" plain @click="drawer = true">显示答题卡</el-button>
+          <el-button type="primary" plain icon="el-icon-tickets"
+                     @click="drawer = true">答题卡</el-button>
         </el-col>
       </el-row>
     </el-footer>
@@ -156,6 +157,7 @@ export default {
         _this.curSum.rightSum = 0
         _this.curSum.wrongSum = 0
         _this.curState = {}
+        _this.curStyle = {}
       }
       _this.$store.commit(type.SET_STATE, {
         name: _this.name, // 当前题库名

@@ -23,7 +23,6 @@
     <el-container class="ques-container">
       <el-main class="main">
         <question :questions="questions" :name="curListItem"
-                  element-loading-spinner="none"
                   :element-loading-text="loadingText"
                   v-loading="loading">
         </question>
