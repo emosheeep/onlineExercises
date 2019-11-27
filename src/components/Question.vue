@@ -26,14 +26,16 @@
           <el-badge :value="curSum.wrongSum"></el-badge>
         </el-col>
         <el-col :span="10">
-          <el-button type="warning" plain icon="el-icon-refresh-right">重做</el-button>
+          <el-button type="warning" plain
+                     icon="el-icon-refresh-right"
+                     @click="reWork">重做</el-button>
           <el-button type="primary" plain @click="drawer = true">显示答题卡</el-button>
         </el-col>
       </el-row>
     </el-footer>
     <el-drawer direction="rtl" size="313px" :visible.sync="drawer" :title="name">
       <div id="answerSheet" @click="switchQuestion">
-        <div v-for="(item, index) in this.questions"
+        <div v-for="(item, index) in questions"
              :class="[
               {active: item.id === current.id},
               myAns[index] === item.answer ? 'success': '',
@@ -49,6 +51,7 @@
 
 <script>
 import type from '../store/mutation-types'
+import {mapState} from 'vuex'
 export default {
   name: 'Question',
   props: {
@@ -71,17 +74,13 @@ export default {
       },
       myAns: [], // 记录我的当前答案
       // 控制答题正误样式
-      curStyle: {
-        A: '',
-        B: '',
-        C: '',
-        D: ''
-      },
-      // 当前题库答题正误数量
+      curStyle: {},
+      // 当前题库答题情况
       curSum: {
         rightSum: 0,
         wrongSum: 0
-      }
+      },
+      curState: {}
     }
   },
   computed: {
@@ -118,7 +117,14 @@ export default {
           return index
         }
       }
-    }
+    },
+    ...mapState({
+      getState: state => {
+        return function (name) {
+          return state.quesState[name]
+        }
+      }
+    })
   },
   methods: {
     judge (event) {
@@ -139,15 +145,19 @@ export default {
         }, 300)
         _this.curSum.rightSum++
       } else _this.curSum.wrongSum++
-      // 提交答题状态
+      // 提交组件内的答题状态
+      _this.$set(_this.curState, this.current.id, answer)
+    },
+    // vuex提交状态信息
+    commitState () {
+      let _this = this
+      let data = {
+        ..._this.curSum,
+        state: _this.curState
+      }
       _this.$store.commit(type.SET_STATE, {
         name: _this.name, // 当前题库名
-        sum: {
-          rightSum: _this.curSum.rightSum,
-          wrongSum: _this.curSum.wrongSum
-        },
-        id: _this.current.id,
-        answer: answer
+        data: data
       })
     },
     /**
@@ -179,36 +189,53 @@ export default {
     // 检查当前题目是否做过
     checkState (quesId) {
       // 保存当前题库题目状态对象
-      let data = this.$store.getters.getState(this.name)
-      // 如果当前题库有记录,且当前题目也有记录
-      if (data && data[quesId]) {
+      let data = this.getState(this.name)
+      // 如果当前题库有记录,且当前题库有做题记录
+      if (data && data.state[quesId]) {
         // 判断正误
-        this.setColor(data[quesId], this.current.answer)
+        this.setColor(data.state[quesId], this.current.answer)
         return true // 设置题目状态为未答
       } else return false
     },
-    // 初始化答题卡数据
+    // 初始化答题数据
     initAnswerSheet () {
-      let record = this.$store.getters.getState(this.name)
-      let sum = record && record.sum
-      // 重置正误数量
-      this.curSum.rightSum = sum ? sum.rightSum : 0
-      this.curSum.wrongSum = sum ? sum.wrongSum : 0
-      // 设置答题卡
-      if (record) {
-        // 删除不必要的属性，防止设置答题卡出错
-        record.sum && delete record.sum
+      let record = this.getState(this.name)
+      if (record && record.state) {
         // 根据已有答题数据对应设置答题卡
-        Object.keys(record).forEach((id, index) => {
-          this.$set(this.myAns, index, record[id])
+        Object.keys(record.state).forEach((id, index) => {
+          this.$set(this.myAns, index, record.state[id])
         })
+        console.log('答题记录已经设置')
       } else {
+        // 否则将已有答题卡记录清空
         this.myAns.splice(0)
       }
+      // 重置正误数量
+      this.curSum.rightSum = record && record.rightSum ? record.rightSum : 0
+      this.curSum.wrongSum = record && record.wrongSum ? record.wrongSum : 0
+    },
+    reWork () {
+      this.$confirm('确认重做当前题库吗？该操作是不可逆的', '警告', {
+        confirmButtonText: '确认重做',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.iterator.get(0)
+        this.myAns.splice(0)
+        // 改变当前题目数量统计，再触发状态改变，使得后台数据也清空
+        this.curSum.rightSum = 0
+        this.curSum.wrongSum = 0
+        this.curState = {}
+        this.$message({
+          type: 'info',
+          message: '已重置',
+          duration: 800
+        })
+      }).catch(() => {})
     }
   },
   watch: {
-    // 监听外部数据变化，有题目传入时初始化
+    // 监听外部数据变化，监控题库的切换
     questions () {
       this.iterator.first() // 注意不能直接修改current，会破坏索引秩序
       this.initAnswerSheet()
@@ -218,6 +245,10 @@ export default {
       this.curStyle = {}
       // 检查当前题目是否做过
       this.Answered = this.checkState(newVal.id)
+    },
+    // 答题状态变化则提交mutations
+    curState () {
+      this.commitState() // vuex
     }
   }
 }
@@ -295,7 +326,7 @@ export default {
   .failed
     background-color $red!important
   .active
-    background-color lightblue
+    background-color lightblue !important
   #answerSheet
     margin 0
     display flex

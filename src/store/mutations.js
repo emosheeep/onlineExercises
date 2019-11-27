@@ -18,11 +18,6 @@ export default {
   },
   // 答题数据
   [type.SET_STATE] (state, data) {
-    // 先检查题库空间是否存在，不存在先开辟空间
-    if (!state.state[data.name]) {
-      state.state[data.name] = {}
-    }
-    state.state[data.name][data.id] = data.answer
-    state.state[data.name].sum = data.sum
+    this._vm.$set(state.quesState, data.name, data.data)
   }
 }

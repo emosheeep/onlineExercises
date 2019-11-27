@@ -16,6 +16,5 @@ export default new Vuex.Store({
   actions,
   mutations,
   getters,
-  strict: debug,
   plugins: debug ? [createLogger()] : [] // 调试插件，控制台打印具体信息
 })

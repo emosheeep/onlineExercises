@@ -54,9 +54,7 @@ export default {
       }).then(() => {
         _this.loading = true
         _this.getData(filename)
-      }).catch(() => {
-        // 否则什么都不做
-      })
+      }).catch(() => {})
     },
     getData (filename) {
       let _this = this
