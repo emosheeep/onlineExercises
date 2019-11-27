@@ -12,7 +12,7 @@
     </el-aside>
     <el-main class="main">
       <question :questions="questions" :name="curListItem"
-                :element-loading-spinner="loadingSpinner"
+                element-loading-spinner="none"
                 :element-loading-text="loadingText"
                 v-loading="loading">
       </question>
@@ -33,7 +33,6 @@ export default {
       curListItem: '',
       loading: true,
       loadingText: '请先选择题库',
-      loadingSpinner: 'el-icon-tickets',
       listLoading: true,
       listLoadingText: '正在加载, 请稍等...',
       curIndex: null
@@ -44,12 +43,12 @@ export default {
     switchQuestion (filename) {
       let _this = this
       // 如果没有变化则退出
-      if (filename === this.curListItem) {
+      if (filename === _this.curListItem) {
         return
       }
       // 如果是首次则直接加载
-      if (this.curListItem === '') {
-        this.loadingText = ''
+      if (_this.curListItem === '') {
+        _this.loadingText = ''
         return _this.getData(filename)
       }
       _this.$msgbox({
@@ -65,8 +64,6 @@ export default {
         cancelButtonText: '继续做题'
       }).then(() => {
         _this.loading = true
-        _this.loadingSpinner = ''
-        _this.loadingText = '正在请求数据，请稍等...'
         _this.getData(filename)
       }).catch(() => {})
     },
