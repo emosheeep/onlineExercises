@@ -53,6 +53,7 @@ export default {
         type: 'warning'
       }).then(() => {
         _this.loading = true
+        _this.loadingText = '正在请求数据，请稍等...'
         _this.getData(filename)
       }).catch(() => {})
     },

@@ -148,16 +148,21 @@ export default {
       // 提交组件内的答题状态
       _this.$set(_this.curState, this.current.id, answer)
     },
-    // vuex提交状态信息
-    commitState () {
+    // vuex提交状态信息,参数：是否重置状态
+    commitState (flag = false) {
       let _this = this
-      let data = {
-        ..._this.curSum,
-        state: _this.curState
+      // flag为true则清除状态
+      if (flag) {
+        _this.curSum.rightSum = 0
+        _this.curSum.wrongSum = 0
+        _this.curState = {}
       }
       _this.$store.commit(type.SET_STATE, {
         name: _this.name, // 当前题库名
-        data: data
+        data: {
+          ..._this.curSum,
+          state: _this.curState
+        }
       })
     },
     /**
@@ -193,6 +198,7 @@ export default {
       // 如果当前题库有记录,且当前题库有做题记录
       if (data && data.state[quesId]) {
         // 判断正误
+        console.log(data.state[quesId])
         this.setColor(data.state[quesId], this.current.answer)
         return true // 设置题目状态为未答
       } else return false
@@ -222,10 +228,7 @@ export default {
       }).then(() => {
         this.iterator.get(0)
         this.myAns.splice(0)
-        // 改变当前题目数量统计，再触发状态改变，使得后台数据也清空
-        this.curSum.rightSum = 0
-        this.curSum.wrongSum = 0
-        this.curState = {}
+        this.commitState(true) // 提交并清除答题数据
         this.$message({
           type: 'info',
           message: '已重置',
