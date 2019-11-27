@@ -208,8 +208,8 @@ export default {
       let record = this.getState(this.name)
       if (record && record.state) {
         // 根据已有答题数据对应设置答题卡
-        Object.keys(record.state).forEach((id, index) => {
-          this.$set(this.myAns, index, record.state[id])
+        Object.keys(record.state).forEach((id) => {
+          this.$set(this.myAns, id - 1, record.state[id])
         })
         console.log('答题记录已经设置')
       } else {
@@ -221,18 +221,26 @@ export default {
       this.curSum.wrongSum = record && record.wrongSum ? record.wrongSum : 0
     },
     reWork () {
-      this.$confirm('确认重做当前题库吗？该操作是不可逆的', '警告', {
+      let _this = this
+      _this.$msgbox({
+        title: '警告',
+        type: 'warning',
+        message: _this.$createElement(
+          'p',
+          {style: 'fontSize: 18px'},
+          '您确认重做当前题库嘛？该操作是不可逆的'
+        ),
+        showCancelButton: true,
         confirmButtonText: '确认重做',
-        cancelButtonText: '取消',
-        type: 'warning'
+        cancelButtonText: '取消'
       }).then(() => {
-        this.iterator.get(0)
-        this.myAns.splice(0)
-        this.commitState(true) // 提交并清除答题数据
-        this.$message({
+        _this.iterator.get(0)
+        _this.myAns.splice(0)
+        _this.commitState(true) // 提交并清除答题数据
+        _this.$message({
           type: 'info',
           message: '已重置',
-          duration: 800
+          duration: 1200
         })
       }).catch(() => {})
     }

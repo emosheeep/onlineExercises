@@ -8,7 +8,7 @@ import type from './mutation-types'
 
 export default {
   // 获取文件列表
-  [type.RECEIVE_FILES] ({commit}) {
+  [type.RECEIVE_FILES] ({commit}, callback) {
     getFileList().then(data => {
       if (data instanceof Array) {
         let files = data.map(item => {
@@ -16,6 +16,9 @@ export default {
           return item.slice(0, item.indexOf('.'))
         })
         commit(type.RECEIVE_FILES, files)
+        if (callback) {
+          callback(files)
+        }
       }
     }).catch(err => console.log(err))
   },

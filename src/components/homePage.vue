@@ -1,6 +1,7 @@
 <template>
   <el-container>
-    <el-aside class="side">
+    <el-aside class="side" v-loading="listLoading"
+              :element-loading-text="listLoadingText">
       <ul id="toLoad">
         <li v-for="(item, index) in fileList" :key="index"
             :class="{active: item === curListItem}"
@@ -11,6 +12,7 @@
     </el-aside>
     <el-main class="main">
       <question :questions="questions" :name="curListItem"
+                :element-loading-spinner="loadingSpinner"
                 :element-loading-text="loadingText"
                 v-loading="loading">
       </question>
@@ -31,6 +33,9 @@ export default {
       curListItem: '',
       loading: true,
       loadingText: '请先选择题库',
+      loadingSpinner: 'el-icon-tickets',
+      listLoading: true,
+      listLoadingText: '正在加载, 请稍等...',
       curIndex: null
     }
   },
@@ -47,12 +52,20 @@ export default {
         this.loadingText = ''
         return _this.getData(filename)
       }
-      _this.$confirm('确认切换题库？记录将会保存。', '提示', {
+      _this.$msgbox({
+        title: '提示',
+        type: 'warning',
+        message: _this.$createElement(
+          'p',
+          {style: 'fontSize: 18px'},
+          '确认切换题库？记录将会保存。'
+        ),
+        showCancelButton: true,
         confirmButtonText: '确认切换',
-        cancelButtonText: '继续做题',
-        type: 'warning'
+        cancelButtonText: '继续做题'
       }).then(() => {
         _this.loading = true
+        _this.loadingSpinner = ''
         _this.loadingText = '正在请求数据，请稍等...'
         _this.getData(filename)
       }).catch(() => {})
@@ -79,7 +92,10 @@ export default {
     Question
   },
   mounted () {
-    this.fileList = this.$store.state.fileList
+    this.$store.dispatch(type.RECEIVE_FILES, fileList => {
+      this.fileList = fileList
+      this.listLoading = false
+    })
   }
 }
 </script>
