@@ -18,4 +18,14 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
+@media (max-width: 500px) {
+  html, body{
+    height: 100%;
+  }
+  #app{
+    height: 100%;
+    display: flex!important;
+  }
+}
+
 </style>

@@ -21,7 +21,7 @@
             <el-button @click="iterator.next()">下一题<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </el-button-group>
         </el-col>
-        <el-col :span="4" id="score" :xs="8">
+        <el-col id="score" :span="4" :xs="8" :sm="4">
           <el-badge :value="curSum.rightSum" type="success"></el-badge>
           <el-badge :value="curSum.wrongSum"></el-badge>
         </el-col>
@@ -356,6 +356,8 @@ export default {
       outline 1px solid rgb(245,245,245)
       &:hover
         background-color rgb(217,237,247)
+  >>> .el-footer
+    height auto !important
   >>> #el-drawer__title
     font-size 18px
   >>> .el-drawer__body
@@ -376,11 +378,11 @@ export default {
     &::-webkit-scrollbar-track
       border-radius 5px
   #questionBox
+    margin-top 1px
     width 600px
+    outline 1px solid rgb(221, 221, 221)
   @media (max-width: 500px)
     #questionBox
       width auto
-      min-height 600px
-    >>> .el-footer
-      height auto !important
+      flex-grow 1
 </style>

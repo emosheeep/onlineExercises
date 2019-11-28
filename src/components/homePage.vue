@@ -5,7 +5,10 @@
                  background-color="#545c64"
                  text-color="#fff"
                  active-text-color="#ffd04b">
-          <el-menu-item index="1">
+          <el-col :span="4" :xs="8" :offset="1" id="head-name">
+            <p>在线答题系统</p>
+          </el-col>
+          <el-col :span="4" :xs="4" style="float: right;line-height: 60px">
             <el-popover trigger="click" placement="bottom" v-model="visible">
               <ul id="toLoad" @click="visible = false"
                   :element-loading-text="listLoadingText"
@@ -15,19 +18,15 @@
                     :title="item"
                     @click="switchQuestion(item)">{{item}}</li>
               </ul>
-              <p slot="reference">选择题库</p>
+              <i class="el-icon-more btn-more" slot="reference"></i>
             </el-popover>
-          </el-menu-item>
+          </el-col>
         </el-menu>
     </el-header>
-    <el-container class="ques-container">
-      <el-main class="main">
-        <question :questions="questions" :name="curListItem"
-                  :element-loading-text="loadingText"
-                  v-loading="loading">
-        </question>
-      </el-main>
-    </el-container>
+    <question :questions="questions" :name="curListItem"
+              :element-loading-text="loadingText"
+              v-loading="loading">
+    </question>
   </el-container>
 </template>
 
@@ -43,7 +42,7 @@ export default {
       fileList: [],
       curListItem: '',
       loading: true,
-      loadingText: '请先选择题库',
+      loadingText: '点击右上方按钮选择题库',
       listLoading: true,
       listLoadingText: '正在加载, 请稍等...',
       visible: false
@@ -150,13 +149,12 @@ export default {
         background-color rgb(245,245,245)
   .container
     min-width 100%
-  .ques-container
-    outline 1px solid rgb(221, 221, 221)
-    max-width 600px
-    margin 0 auto
-  .main
-    scrollBar()
-    padding 0
   .header
     padding 0
+  #head-name
+    font-size 20px
+    color white
+    line-height 60px
+  .btn-more
+    transform scale(2.5)
 </style>
