@@ -24,6 +24,7 @@
         </el-menu>
     </el-header>
     <question :questions="questions" :name="curListItem"
+              ref="question"
               :element-loading-text="loadingText"
               v-loading="loading">
     </question>
@@ -74,6 +75,8 @@ export default {
         cancelButtonText: '继续做题'
       }).then(() => {
         _this.loading = true
+        // 子组件触发状态提交，并清除当前状态
+        _this.$refs.question.commitState()
         _this.getData(filename)
       }).catch(() => {})
     },
@@ -157,4 +160,5 @@ export default {
     line-height 60px
   .btn-more
     transform scale(2.5)
+    color white
 </style>

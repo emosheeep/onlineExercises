@@ -18,6 +18,16 @@ export default {
   },
   // 答题数据
   [type.SET_STATE] (state, data) {
-    this._vm.$set(state.quesState, data.name, data.data)
+    // 如果不存在对应数据项目，则开辟空间
+    if (!state.quesState[data.name]) {
+      state.quesState[data.name] = {}
+    }
+    // 收到重置信号，则清空
+    if (data.reset) {
+      state.quesState[data.name] = {}
+      return
+    }
+    // 更新quesState内容
+    state.quesState[data.name] = data.data
   }
 }

@@ -129,43 +129,31 @@ export default {
   },
   methods: {
     judge (event) {
-      let _this = this
       let index = event.target.getAttribute('index')
       // 如果题目已经答过或者当前元素不是选项
-      if (_this.Answered || !index) {
+      if (this.Answered || !index) {
         return
       }
-      let answer = this.answer[index]
-      // 设置我的答案,使用Vue可以监听到的方式
-      _this.$set(_this.myAns, _this.iterator.getIndex(), answer)
-      _this.Answered = true // 表示当前题目已经做过了
+      this.setState(this.answer[index]) // 设置答题状态
+      this.commitState() // vuex提交状态
+    },
+    /**
+     *answer 传入正确答案，设置所有题目状态
+     */
+    setState (answer) {
+      let _this = this
       let status = _this.setColor(answer, _this.current.answer)
       if (status) { // 设置正误数量
+        _this.curSum.rightSum++
+      } else _this.curSum.wrongSum++
+      _this.curState[_this.current.id] = answer // 设置组件当前答题状态
+      _this.$set(_this.myAns, _this.iterator.getIndex(), answer) // 设置答题卡
+      _this.Answered = true // 表示当前题目已经做过了
+      if (status) { // 自动切换题目，setTimeout异步执行.防止还没有提交状态就改变当前题目信息
         setTimeout(() => {
           _this.iterator.next()
         }, 300)
-        _this.curSum.rightSum++
-      } else _this.curSum.wrongSum++
-      // 提交组件内的答题状态
-      _this.$set(_this.curState, this.current.id, answer)
-    },
-    // vuex提交状态信息,参数：是否重置状态
-    commitState (flag = false) {
-      let _this = this
-      // flag为true则清除状态
-      if (flag) {
-        _this.curSum.rightSum = 0
-        _this.curSum.wrongSum = 0
-        _this.curState = {}
-        _this.curStyle = {}
       }
-      _this.$store.commit(type.SET_STATE, {
-        name: _this.name, // 当前题库名
-        data: {
-          ..._this.curSum,
-          state: _this.curState
-        }
-      })
     },
     /**
      * 设置答案
@@ -182,6 +170,34 @@ export default {
         this.$set(this.curStyle, rightAns, 'success')
         return false
       }
+    },
+    // 清除本地状态
+    clearState () {
+      let _this = this
+      _this.curSum.rightSum = 0
+      _this.curSum.wrongSum = 0
+      _this.curState = {}
+      _this.curStyle = {}
+      _this.myAns.splice(0)
+    },
+    /**
+     * vuex提交状态信息
+     * flag：是否重置状态
+     */
+    commitState (flag = false) {
+      let _this = this
+      // flag为true则清除状态
+      let options = {
+        ..._this.curSum,
+        state: _this.curState
+      }
+      if (flag) {
+        options.reset = true
+      }
+      _this.$store.commit(type.SET_STATE, {
+        name: _this.name, // 当前题库名
+        data: options
+      })
     },
     // 点击答题卡，切换到相应题目
     switchQuestion (event) {
@@ -207,14 +223,12 @@ export default {
     // 初始化答题数据
     initAnswerSheet () {
       let record = this.getState(this.name)
+      this.clearState() // 清空所有临时状态
       if (record && record.state) {
         // 根据已有答题数据对应设置答题卡
         Object.keys(record.state).forEach((id) => {
           this.$set(this.myAns, id - 1, record.state[id])
         })
-      } else {
-        // 否则将已有答题卡记录清空
-        this.myAns.splice(0)
       }
       // 重置正误数量
       this.curSum.rightSum = record && record.rightSum ? record.rightSum : 0
@@ -236,7 +250,7 @@ export default {
       }).then(() => {
         _this.iterator.get(0)
         _this.myAns.splice(0)
-        _this.commitState(true) // 提交并清除答题数据
+        _this.commitState(true) // 提交并清除所有答题数据
         _this.$message({
           type: 'info',
           message: '已重置',
@@ -253,13 +267,9 @@ export default {
     },
     // 题目变化时自定设置答题状态
     current (newVal) {
-      this.curStyle = {}
+      this.curStyle = {} // 重置颜色
       // 检查当前题目是否做过
       this.Answered = this.checkState(newVal.id)
-    },
-    // 答题状态变化则提交mutations
-    curState () {
-      this.commitState() // vuex
     }
   }
 }
