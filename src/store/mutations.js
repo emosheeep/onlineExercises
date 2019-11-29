@@ -6,9 +6,7 @@ import type from './mutation-types'
 export default {
   // 文件列表
   [type.RECEIVE_FILES] (state, data) {
-    for (let item of data.files) {
-      state.fileList.push(item)
-    }
+    state.fileList = data.files
     data.callback && data.callback(data.files)
   },
   // 题目数据
