@@ -6,6 +6,7 @@ import type from './mutation-types'
 export default {
   // 文件列表
   [type.RECEIVE_FILES] (state, data) {
+    console.log(data)
     state.fileList = data.files
     data.callback && data.callback(data.files)
   },

@@ -146,7 +146,7 @@ export default {
       if (status) { // 设置正误数量
         _this.curSum.rightSum++
       } else _this.curSum.wrongSum++
-      _this.curState[_this.current.id] = answer // 设置组件当前答题状态
+      _this.$set(_this.curState, _this.current.id, answer) // 设置组件当前答题状态
       _this.$set(_this.myAns, _this.iterator.getIndex(), answer) // 设置答题卡
       _this.Answered = true // 表示当前题目已经做过了
       if (status) { // 自动切换题目，setTimeout异步执行.防止还没有提交状态就改变当前题目信息
@@ -191,6 +191,7 @@ export default {
         ..._this.curSum,
         state: _this.curState
       }
+      console.log(options)
       if (flag) {
         options.reset = true
       }
