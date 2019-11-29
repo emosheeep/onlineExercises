@@ -200,7 +200,6 @@ export default {
       // 如果当前题库有记录,且当前题库有做题记录
       if (data && data.state[quesId]) {
         // 判断正误
-        console.log(data.state[quesId])
         this.setColor(data.state[quesId], this.current.answer)
         return true // 设置题目状态为未答
       } else return false
@@ -213,7 +212,6 @@ export default {
         Object.keys(record.state).forEach((id) => {
           this.$set(this.myAns, id - 1, record.state[id])
         })
-        console.log('答题记录已经设置')
       } else {
         // 否则将已有答题卡记录清空
         this.myAns.splice(0)
