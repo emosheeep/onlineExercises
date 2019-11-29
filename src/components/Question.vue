@@ -191,7 +191,6 @@ export default {
         ..._this.curSum,
         state: _this.curState
       }
-      console.log(options)
       if (flag) {
         options.reset = true
       }
@@ -250,7 +249,7 @@ export default {
         cancelButtonText: '取消'
       }).then(() => {
         _this.iterator.get(0)
-        _this.myAns.splice(0)
+        _this.clearState()
         _this.commitState(true) // 提交并清除所有答题数据
         _this.$message({
           type: 'info',
