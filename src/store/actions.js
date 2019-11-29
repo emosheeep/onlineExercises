@@ -15,10 +15,10 @@ export default {
           // 去除文件后缀名
           return item.slice(0, item.indexOf('.'))
         })
-        commit(type.RECEIVE_FILES, files)
-        if (callback) {
-          callback(files)
-        }
+        commit(type.RECEIVE_FILES, {
+          files: files,
+          callback: callback
+        })
       }
     }).catch(err => console.log(err))
   },
