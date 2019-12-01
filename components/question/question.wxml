@@ -1,0 +1,16 @@
+<!--components/question/question.wxml-->
+<view class="container">
+  <view class="header">
+    <text id="quesId">{{current.id}}</text>
+    <text id="title">{{current.title}}</text>
+  </view>
+  <view class="body" bindtap="judge">
+    <text wx:for="{{current.list}}" wx:for-index="index" data-index="{{index}}"
+      wx:for-item="item" wx:key="index" class="{{curStyle[answer[index]]}}">{{item}}</text>
+  </view>
+  <view class="footer">
+   <button id="preBtn" type="default" size="mini" bindtap="switchQuestion">上一题</button>
+   <button id="nextBtn" type="default" size="mini" bindtap="switchQuestion">下一题</button>
+   <button type="default" size="mini" bindtap="reWork">重做</button>
+  </view>
+</view>
