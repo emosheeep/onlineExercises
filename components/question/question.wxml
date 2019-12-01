@@ -1,8 +1,8 @@
 <!--components/question/question.wxml-->
 <view class="container">
   <view class="header">
-    <text id="quesId">{{current.id}}</text>
-    <text id="title">{{current.title}}</text>
+    <text class="quesId">{{current.id}}</text>
+    <text class="title">{{current.title}}</text>
   </view>
   <view class="body" bindtap="judge">
     <text wx:for="{{current.list}}" wx:for-index="index" data-index="{{index}}"

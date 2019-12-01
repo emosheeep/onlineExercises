@@ -4,5 +4,5 @@
     <text wx:for="{{fileList}}" wx:for-index="index"
       wx:for-item="item" wx:key="index" data-filename="{{item}}">{{item}}</text>
   </view>
-  <question name="{{curItemList}}" question="{{questions}}"></question>
+  <question name="{{curListItem}}" questions="{{questions}}"></question>
 </view>

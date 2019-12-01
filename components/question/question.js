@@ -14,9 +14,10 @@ Component({
    * 组件的初始数据
    */
   data: {
-    Answered: false, // 题目是否已经答过
+    Answered: false,    // 题目是否已经答过
+    localQuestions: [], // 保存当前题库题目
     answer: ['A', 'B', 'C', 'D'],
-    current: {       // 保存当前题目
+    current: {          // 保存当前题目
       id: 1,
       title: '正在加载...',
       list: [1,2,3,4],
@@ -37,30 +38,30 @@ Component({
     // 创建迭代器，所有题目的切换都要用到这个
     iterator(data) {
       let index = 0
-      // let questions = 
+      let questions = data.localQuestions
       return {
         first() {
           index = 0 // 矫正当前索引和当前题目,矫正要放在前面
-          data.current = _this.questions[index]
+          data.current = questions[index]
         },
         pre() {
           if (--index >= 0) { // 如果索引值大于等于零获取相应元素
-            data.current = _this.questions[index]
+            data.current = questions[index]
           } else {
             index = 0 // 矫正索引
           }
         },
         next() {
-          if (++index < _this.questions.length) { // 如果索引在范围内就获取元素
-            data.current = _this.questions[index]
+          if (++index < questions.length) { // 如果索引在范围内就获取元素
+            data.current = questions[index]
           } else {
-            index = _this.questions.length - 1 // 矫正index
+            index = questions.length - 1 // 矫正index
           }
         },
         get(num) {
-          if (num >= 0 && num < _this.questions.length) {
+          if (num >= 0 && num < questions.length) {
             index = num // 矫正index,注意先后顺序
-            data.current = _this.questions[index]
+            data.current = questions[index]
           }
         },
         getIndex() {
@@ -68,6 +69,12 @@ Component({
         }
       }
     },
+  },
+  watch: {
+    // 将外部传入的题目保存到内部变量中
+    'questions': function (newVal) {
+      this.setData({ localQuestions: newVal })
+    }
   },
   /**
    * 组件的方法列表
@@ -89,7 +96,7 @@ Component({
      */
     setState(answer) {
       let _this = this
-      // let status = _this.setColor(answer, _this.current.answer)
+      // let status = _this.setColor(answer, _this.data.current.answer)
       let status = _this.setColor(answer, 'B')
       if (status) { // 设置正误数量
         _this.setData({ ['curSum.rightSum']: _this.data.curSum.rightSum + 1})
@@ -110,7 +117,6 @@ Component({
      * @param rightAns   正确答案
      */
     setColor(answer, rightAns) {
-      console.log(answer, rightAns)
       if (rightAns === answer) {
         this.setData({['curStyle.' + answer]: 'success'})
         return true // 表示答对了

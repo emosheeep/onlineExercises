@@ -1,9 +1,8 @@
 /* components/question/question.wxss */
-
 .header {
   padding: 10rpx;
 }
-#quesId::after{content: '. '}
+.quesId::after{content: '. '}
 .body {
   min-height: 400rpx;
   padding: 10rpx;
