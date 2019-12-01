@@ -161,7 +161,7 @@ export default {
      * @param rightAns   正确答案
      */
     setColor (answer, rightAns) {
-      if (this.current.answer === answer) {
+      if (rightAns === answer) {
         this.$set(this.curStyle, answer, 'success')
         return true // 表示答对了
       } else {
