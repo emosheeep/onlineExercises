@@ -27,6 +27,16 @@ App({
   },
   getQuestions (filename, callback = null) {
     let _this = this
+    let data = _this.globalData.questions[filename]
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+    if (data) {
+      // 如果存在数据则直接返回
+      callback && callback(data)
+      return wx.hideLoading()
+    }
     wx.request({
       url: 'http://www.biubiubius.com:3000/question',
       method: 'POST',
@@ -40,6 +50,7 @@ App({
         let data = res.data
         if (data.success) {
           _this.globalData.questions[data.filename] = data.data
+          wx.hideLoading()
           callback && callback(data.data)
         } else {
           console.error(data)

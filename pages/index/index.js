@@ -28,8 +28,26 @@ Page({
     })
   },
   onLoad: function () {
-    app.getFileList(fileList => {
-      this.setData({ fileList: fileList })
+    wx.showLoading({
+      title: '加载中',
+      mask: true
     })
+    app.getFileList(fileList => {
+      this.setData({ fileList: fileList }, () => {
+        wx.hideLoading()
+      })
+    })
+    // wx.showActionSheet({
+    //   itemList: ['1','2','3','4','5','6'],
+    //   success(res) {
+    //     console.log(res.tapIndex)
+    //   },
+    //   fail(res) {
+    //     console.error(res.errMsg)
+    //   }
+    // })
+  },
+  getuserinfo (data) {
+    console.log(data)
   }
 })

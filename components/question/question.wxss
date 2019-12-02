@@ -1,4 +1,7 @@
 /* components/question/question.wxss */
+.container {
+  flex-grow: 1;
+}
 .header {
   padding: 10rpx;
 }
@@ -19,6 +22,10 @@
 .body text:nth-child(2)::before{content: "B. "}
 .body text:nth-child(3)::before{content: "C. "}
 .body text:nth-child(4)::before{content: "D. "}
+.footer button {
+  font-weight: normal;
+  color: black;
+}
 .default {
   background-color: rgb(245,245,245)
 }

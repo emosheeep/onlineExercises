@@ -19,7 +19,7 @@ Component({
     current: {          // 保存当前题目
       id: 1,
       title: '正在加载...',
-      list: [1,2,3,4],
+      list: ['loading', 'loading', 'loading', 'loading'],
       answer: ''
     },
     myAns: [], // 记录我的当前答案
@@ -110,7 +110,8 @@ Component({
         ['curSum.wrongSum']: 0,
         curState: {},
         curStyle: {},
-        myAns: []
+        myAns: [],
+        answered: false
       })
     },
     /**

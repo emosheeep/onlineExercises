@@ -1,6 +1,6 @@
 <!--components/question/question.wxml-->
-<view class="container">
-  <view class="header">
+<view>
+  <view class="header default">
     <text class="quesId">{{current.id}}</text>
     <text class="title">{{current.title}}</text>
   </view>
