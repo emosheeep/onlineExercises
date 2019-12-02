@@ -2,7 +2,7 @@
 App({
   globalData: {
     fileList: [],   // 保存文件列表
-    state: {},      // 保存答题状态
+    quesState: {},  // 保存答题状态
     questions: {}   // 保存题目
   },
   getFileList (callback) {

@@ -1,5 +1,5 @@
 <!--components/question/question.wxml-->
-<view>
+<view class="container">
   <view class="header default">
     <text class="quesId">{{current.id}}</text>
     <text class="title">{{current.title}}</text>
@@ -9,8 +9,15 @@
       wx:for-item="item" wx:key="index" class="{{curStyle[answer[index]]}}">{{item}}</text>
   </view>
   <view class="footer">
-   <button id="preBtn" type="default" size="mini" bindtap="switchQuestion">上一题</button>
-   <button id="nextBtn" type="default" size="mini" bindtap="switchQuestion">下一题</button>
-   <button type="default" size="mini" bindtap="reWork">重做</button>
+    <view class="btn-group">
+      <button id="preBtn" plain type="default" size="mini" bindtap="switchQuestion">上一题</button>
+      <button id="nextBtn" plain type="default" size="mini" bindtap="switchQuestion">下一题</button>
+      <button type="warn" plain size="mini" bindtap="reWork">重做</button>
+    </view>
   </view>
+</view>
+<view class="answerSheet" bindtap="switchAnswerSheet">
+  <text wx:for="{{questions}}" wx:for-index="index" wx:for-item="item" 
+        wx:key="index" data-index="{{index}}" data-id="{{item.id}}"
+        class="{{item.id === current.id ? 'active' : ''}} {{myAns[index] === item.answer ? 'success' : ''}} {{myAns[index] && myAns[index] !== item.answer ? 'failed' : ''}}">{{item.id}}</text>
 </view>

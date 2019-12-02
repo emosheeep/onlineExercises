@@ -1,6 +1,12 @@
 /* components/question/question.wxss */
 .container {
-  flex-grow: 1;
+  height: 1000rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border: 2px rgb(245,245,245) solid;
+  border-radius: 10rpx;
 }
 .header {
   padding: 10rpx;
@@ -12,6 +18,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  flex-grow: 1;
 }
 .body text{
   display: block;
@@ -22,7 +29,16 @@
 .body text:nth-child(2)::before{content: "B. "}
 .body text:nth-child(3)::before{content: "C. "}
 .body text:nth-child(4)::before{content: "D. "}
-.footer button {
+.footer {
+  height: 100rpx;
+  display: flex;
+  justify-content: space-between;
+}
+.btn-group {
+  width: 100%;
+  line-height: 100rpx;
+}
+.btn-group button {
   font-weight: normal;
   color: black;
 }
@@ -30,11 +46,22 @@
   background-color: rgb(245,245,245)
 }
 .active {
-  background-color: lightblue
+  background-color: lightblue !important
 }
 .success {
-  background-color:rgb(223,240,216)
+  background-color:rgb(223,240,216) !important
 }
 .failed {
-  background-color: rgb(242,222,222)
+  background-color: rgb(242,222,222) !important
+}
+.answerSheet {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+.answerSheet text {
+  width: 72rpx;
+  height: 72rpx;
+  line-height: 72rpx;
+  border: 1px  rgb(245,245,245) solid;
 }

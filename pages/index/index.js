@@ -46,8 +46,5 @@ Page({
     //     console.error(res.errMsg)
     //   }
     // })
-  },
-  getuserinfo (data) {
-    console.log(data)
   }
 })

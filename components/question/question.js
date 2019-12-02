@@ -1,4 +1,5 @@
 // components/question/question.js
+const app = getApp()
 
 Component({
   behaviors: [require('miniprogram-computed')],
@@ -29,7 +30,8 @@ Component({
       wrongSum: 0
     },
     curState: {},
-    iterator: null // 保存迭代器
+    iterator: null, // 保存迭代器
+    show: false
   },
   watch: {
     // 将外部传入的题目保存到内部变量中，传入题目后触发操作
@@ -40,12 +42,11 @@ Component({
       }
       this.setData({ iterator: this.iterator() })
       this.data.iterator.first() // 初始化题目
+      this.initAnswerSheet()     // 初始化答题数据
     },
-    current () {
-      this.setData({
-        curStyle: {},
-        answered: false
-      })
+    current (newVal) {
+      this.setData({ curStyle: {} }) // 重置颜色和设置颜色要分开写，否则会造成数据与视图不一致
+      this.setData({ answered: this.checkState(newVal.id) })
     }
   },
   /**
@@ -63,7 +64,7 @@ Component({
       }
       this.setState(answer) // 设置答题状态
       this.setData({ answered: true })// 表示当前题目已经做过了
-      // this.commitState() // vuex提交状态
+      this.commitState() // 提交状态
     },
     /**
      *answer 传入正确答案，设置所有题目状态
@@ -84,7 +85,7 @@ Component({
       if (status) { // 自动切换题目
         setTimeout(() => {
           _this.data.iterator.next()
-        }, 400)
+        }, 300)
       }
     },
     /**
@@ -98,8 +99,10 @@ Component({
         return true // 表示答对了
       } else {
         // 如果答错则标出我的答案和正确答案
-        this.setData({ ['curStyle.' + answer]: 'failed' })
-        this.setData({ ['curStyle.' + rightAns]: 'success' })
+        this.setData({
+          ['curStyle.' + answer]: 'failed',
+          ['curStyle.' + rightAns]: 'success'
+        })
         return false
       }
     },
@@ -122,16 +125,14 @@ Component({
       let _this = this
       // flag为true则清除状态
       let options = {
-        ..._this.curSum,
-        state: _this.curState
+        ..._this.data.curSum,
+        state: _this.data.curState
       }
       if (flag) {
-        options.reset = true
+        _this.clearState()
+        options = {}
       }
-      _this.$store.commit(type.SET_STATE, {
-        name: _this.name, // 当前题库名
-        data: options
-      })
+      app.globalData.quesState[_this.properties.name] = options
     },
     // 前后题目切换按钮
     switchQuestion(event) {
@@ -151,37 +152,40 @@ Component({
     // 点击答题卡，切换到相应题目
     switchAnswerSheet(event) {
       // 获取文本节点内容
-      let quesId = event.target.firstChild.nodeValue
+      let quesId = event.target.dataset.id
       if (!quesId) {
         return
       }
-      this.drawer = false // 关闭答题卡
-      this.iterator.get(parseInt(quesId) - 1) // 利用迭代器切换当前题目
+      this.data.iterator.get(parseInt(quesId) - 1) // 利用迭代器切换当前题目
     },
     // 检查当前题目是否做过
     checkState(quesId) {
       // 保存当前题库题目状态对象
-      let data = this.getState(this.name)
+      let data = app.globalData.quesState[this.properties.name]
       // 如果当前题库有记录,且当前题库有做题记录
       if (data && data.state[quesId]) {
         // 判断正误
-        this.setColor(data.state[quesId], this.current.answer)
+        this.setColor(data.state[quesId], this.data.current.answer)
         return true // 设置题目状态为未答
       } else return false
     },
     // 初始化答题数据
     initAnswerSheet() {
-      let record = this.getState(this.name)
+      let record = app.globalData.quesState[this.properties.name]
       this.clearState() // 清空所有临时状态
       if (record && record.state) {
         // 根据已有答题数据对应设置答题卡
         Object.keys(record.state).forEach((id) => {
-          this.$set(this.myAns, id - 1, record.state[id])
+          this.setData({
+            ['myAns['+(id - 1)+']']: record.state[id]
+          })
         })
       }
       // 重置正误数量
-      this.curSum.rightSum = record && record.rightSum ? record.rightSum : 0
-      this.curSum.wrongSum = record && record.wrongSum ? record.wrongSum : 0
+      this.setData({
+        'curSum.rightSum': record && record.rightSum ? record.rightSum : 0,
+        'curSum.wrongSum': record && record.wrongSum ? record.wrongSum : 0
+      })
     },
     reWork() {
       let _this = this
@@ -197,7 +201,7 @@ Component({
           if (res.confirm) {
             _this.clearState()
             _this.data.iterator.get(0)
-            // _this.commitState(true) // 提交并清除所有答题数据
+            _this.commitState(true) // 提交并清除所有答题数据
             wx.showToast({
               title: '已重置',
               icon: 'success',
