@@ -14,8 +14,7 @@ Component({
    * 组件的初始数据
    */
   data: {
-    Answered: false,    // 题目是否已经答过
-    localQuestions: [], // 保存当前题库题目
+    answered: false,    // 题目是否已经答过
     answer: ['A', 'B', 'C', 'D'],
     current: {          // 保存当前题目
       id: 1,
@@ -29,51 +28,24 @@ Component({
       rightSum: 0,
       wrongSum: 0
     },
-    curState: {}
-  },
-  /**
-   * 计算属性
-   */
-  computed: {
-    // 创建迭代器，所有题目的切换都要用到这个
-    iterator(data) {
-      let index = 0
-      let questions = data.localQuestions
-      return {
-        first() {
-          index = 0 // 矫正当前索引和当前题目,矫正要放在前面
-          data.current = questions[index]
-        },
-        pre() {
-          if (--index >= 0) { // 如果索引值大于等于零获取相应元素
-            data.current = questions[index]
-          } else {
-            index = 0 // 矫正索引
-          }
-        },
-        next() {
-          if (++index < questions.length) { // 如果索引在范围内就获取元素
-            data.current = questions[index]
-          } else {
-            index = questions.length - 1 // 矫正index
-          }
-        },
-        get(num) {
-          if (num >= 0 && num < questions.length) {
-            index = num // 矫正index,注意先后顺序
-            data.current = questions[index]
-          }
-        },
-        getIndex() {
-          return index
-        }
-      }
-    },
+    curState: {},
+    iterator: null // 保存迭代器
   },
   watch: {
-    // 将外部传入的题目保存到内部变量中
-    'questions': function (newVal) {
-      this.setData({ localQuestions: newVal })
+    // 将外部传入的题目保存到内部变量中，传入题目后触发操作
+    questions (newVal) {
+      // 过滤首次
+      if (!Array.isArray(newVal) || newVal.length ===0) {
+        return
+      }
+      this.setData({ iterator: this.iterator() })
+      this.data.iterator.first() // 初始化题目
+    },
+    current () {
+      this.setData({
+        curStyle: {},
+        answered: false
+      })
     }
   },
   /**
@@ -81,14 +53,16 @@ Component({
    */
   methods: {
     judge(event) {
+      if (this.properties.questions.length === 0 || !this.iterator) {
+        return
+      }
       let answer = this.data.answer[event.target.dataset.index]
       // 如果题目已经答过或者当前元素不是target
-      if (this.Answered || !answer) {
+      if (this.data.answered || !answer) {
         return
       }
       this.setState(answer) // 设置答题状态
-      console.log(this.data.curStyle)
-      this.Answered = true // 表示当前题目已经做过了
+      this.setData({ answered: true })// 表示当前题目已经做过了
       // this.commitState() // vuex提交状态
     },
     /**
@@ -96,20 +70,22 @@ Component({
      */
     setState(answer) {
       let _this = this
-      // let status = _this.setColor(answer, _this.data.current.answer)
-      let status = _this.setColor(answer, 'B')
+      let status = _this.setColor(answer, _this.data.current.answer)
       if (status) { // 设置正误数量
         _this.setData({ ['curSum.rightSum']: _this.data.curSum.rightSum + 1})
       } else {
         _this.setData({ ['curSum.wrongSum']: _this.data.curSum.wrongSum + 1 })
       }
-      _this.setData({ ['curState.' + _this.data.current.id]: answer }) // 设置组件当前答题状态
-      _this.setData({ ['myAns[' + _this.data.iterator.getIndex() + ']']: answer }) // 设置答题卡
-      // if (status) { // 自动切换题目，setTimeout异步执行.防止还没有提交状态就改变当前题目信息
-      //   setTimeout(() => {
-      //     _this.iterator.next()
-      //   }, 300)
-      // }
+       // 设置答题卡和当前答题状态
+      _this.setData({
+        ['curState.' + _this.data.current.id]: answer,
+        ['myAns[' + _this.data.iterator.getIndex() + ']']: answer
+      })
+      if (status) { // 自动切换题目
+        setTimeout(() => {
+          _this.data.iterator.next()
+        }, 400)
+      }
     },
     /**
      * 设置答案
@@ -159,16 +135,20 @@ Component({
     // 前后题目切换按钮
     switchQuestion(event) {
       let type = event.target.id
+      if (this.properties.questions.length === 0 || !this.data.iterator) {
+        return
+      }
       switch (type) {
         case 'preBtn':
+          this.data.iterator.pre()
           break
         case 'nextBtn':
+          this.data.iterator.next()
           break
       }
-      console.log(type)
     },
     // 点击答题卡，切换到相应题目
-    switchQuestion(event) {
+    switchAnswerSheet(event) {
       // 获取文本节点内容
       let quesId = event.target.firstChild.nodeValue
       if (!quesId) {
@@ -204,6 +184,9 @@ Component({
     },
     reWork() {
       let _this = this
+      if (_this.properties.questions.length === 0 || !_this.data.iterator) {
+        return
+      }
       wx.showModal({
         title: '警告',
         content: '您确认重做当前题库嘛？该操作是不可逆的',
@@ -212,7 +195,7 @@ Component({
         success(res) {
           if (res.confirm) {
             _this.clearState()
-            // _this.iterator.get(0)
+            _this.data.iterator.get(0)
             // _this.commitState(true) // 提交并清除所有答题数据
             wx.showToast({
               title: '已重置',
@@ -222,6 +205,41 @@ Component({
           }
         }
       })
+    },
+    // 创建迭代器，所有题目的切换都要用到这个
+    iterator () {
+      let index = 0
+      let _this = this
+      let questions = _this.properties.questions
+      return {
+        first() {
+          index = 0 // 矫正当前索引和当前题目,矫正要放在前面
+          _this.setData({ current: questions[index] }) 
+        },
+        pre() {
+          if (--index >= 0) { // 如果索引值大于等于零获取相应元素
+            _this.setData({ current: questions[index] }) 
+          } else {
+            index = 0 // 矫正索引
+          }
+        },
+        next() {
+          if (++index < questions.length) { // 如果索引在范围内就获取元素
+            _this.setData({ current: questions[index] }) 
+          } else {
+            index = questions.length - 1 // 矫正index
+          }
+        },
+        get(num) {
+          if (num >= 0 && num < questions.length) {
+            index = num // 矫正index,注意先后顺序
+            _this.setData({ current: questions[index] }) 
+          }
+        },
+        getIndex() {
+          return index
+        }
+      }
     }
   }
 })

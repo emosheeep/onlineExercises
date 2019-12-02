@@ -41,7 +41,6 @@ App({
         if (data.success) {
           _this.globalData.questions[data.filename] = data.data
           callback && callback(data.data)
-          console.log(_this.globalData)
         } else {
           console.error(data)
         }

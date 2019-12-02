@@ -23,9 +23,7 @@ Page({
     
     // 请求相应题库
     app.getQuestions(filename, data => {
-      this.setData({ questions: data }, function(){
-        console.log("题目此u该案成")
-      })
+      this.setData({ questions: data })
       this.setData({ curListItem: filename }) // 设置当前题库名
     })
   },
