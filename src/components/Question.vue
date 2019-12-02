@@ -179,6 +179,7 @@ export default {
       _this.curState = {}
       _this.curStyle = {}
       _this.myAns.splice(0)
+      _this.Answered = false
     },
     /**
      * vuex提交状态信息
