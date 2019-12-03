@@ -5,7 +5,6 @@
   flex-direction: column;
   align-items: left;
   justify-content: space-between;
-  padding: 20rpx 0;
   box-sizing: border-box;
 } 
 page {
@@ -13,11 +12,20 @@ page {
 }
 .question {
   flex-grow: 1;
+  transform: translateX(-100%);
 }
-.curQuestion {
-  font-size: 18px;
+.file-picker {
+  border: 2px rgb(245,245,245) solid;
+  padding: 20rpx;
+  font-size: 20px;
   color: teal;
 }
-.fileList text {
-  display: block;
+.file-picker text:nth-child(1) {
+  display: inline-block;
+  width: 200rpx;
+}
+.file-picker text:nth-child(2) {
+  display: inline-block;
+  width: calc(100% - 200rpx);
+  text-align: center;
 }

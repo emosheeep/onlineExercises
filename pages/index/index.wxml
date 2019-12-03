@@ -1,7 +1,7 @@
 <!--index.wxml-->
 <view class="container">
-  <picker range="{{fileList}}" bindchange="changeQuestion">
-    <view class="curQuestion">当前题库: <text>{{curListItem}}</text></view>
+  <picker range="{{fileList}}" bindchange="changeQuestion" class="file-picker">
+    <view><text>当前题库: </text><text>{{curListItem}}</text></view>
   </picker>
-  <question class="question" name="{{curListItem}}" questions="{{questions}}"></question>
+  <question animation="{{animation}}" class="question" name="{{curListItem}}" questions="{{questions}}"></question>
 </view>

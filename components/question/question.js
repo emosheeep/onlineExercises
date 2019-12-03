@@ -15,6 +15,8 @@ Component({
    * 组件的初始数据
    */
   data: {
+    show: false,
+    animation: {},        // 显示答题卡
     answered: false,    // 题目是否已经答过
     answer: ['A', 'B', 'C', 'D'],
     current: {          // 保存当前题目
@@ -31,7 +33,6 @@ Component({
     },
     curState: {},
     iterator: null, // 保存迭代器
-    show: false
   },
   watch: {
     // 将外部传入的题目保存到内部变量中，传入题目后触发操作
@@ -244,6 +245,32 @@ Component({
         getIndex() {
           return index
         }
+      }
+    },
+    showAnswerSheet () {
+      let _this = this
+      // 过滤
+      if (_this.properties.questions.length === 0 || !_this.data.iterator) {
+        return
+      }
+      let animation = wx.createAnimation({
+        duration: 500,
+        timingFunction: 'ease',
+        transformOrigin: '50% 0 0'
+      })
+      // toggle效果
+      if (!_this.data.show) {
+        animation.scaleY(1).height('auto').step()
+        _this.setData({
+          animation: animation.export(),
+          show: true
+        })
+      } else {
+        animation.scaleY(0).height(0).step()
+        _this.setData({
+          animation: animation.export(),
+          show: false
+        })
       }
     }
   }
