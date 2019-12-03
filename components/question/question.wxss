@@ -1,6 +1,6 @@
 /* components/question/question.wxss */
 .container {
-  height: 1000rpx;
+  min-height: 1000rpx;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -10,11 +10,12 @@
 }
 .header {
   padding: 10rpx;
+  min-height: 30px;
 }
 .quesId::after{content: '. '}
 .body {
   min-height: 400rpx;
-  padding: 10rpx;
+  padding: 30rpx 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -23,22 +24,23 @@
 .body text{
   display: block;
   padding: 10rpx;
+  height: 60rpx;
+  line-height: 60rpx;
   border-radius: 5rpx;
+}
+.body text:hover {
+  background-color: rgb(245,245,245);
 }
 .body text:nth-child(1)::before{content: "A. "}
 .body text:nth-child(2)::before{content: "B. "}
 .body text:nth-child(3)::before{content: "C. "}
 .body text:nth-child(4)::before{content: "D. "}
 .footer {
-  height: 100rpx;
   display: flex;
   justify-content: space-between;
+  padding: 20rpx 0;
 }
-.btn-group {
-  width: 100%;
-  line-height: 100rpx;
-}
-.btn-group button {
+.footer button {
   font-weight: normal;
   color: black;
 }

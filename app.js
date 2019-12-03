@@ -22,6 +22,10 @@ App({
       },
       fail(err) {
         console.log(err)
+        // 请求失败则一段时间后再次发起请求
+        setTimeout(function(){
+          _this.getFileList(callback)
+        }, 4000)
       }
     })
   },

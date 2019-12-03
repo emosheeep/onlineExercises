@@ -1,8 +1,7 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="fileList" bindtap="changeQuestion">
-  <text wx:for="{{fileList}}" wx:for-index="index"
-      wx:for-item="item" wx:key="index" data-filename="{{item}}">{{item}}</text>
-  </view>
+  <picker range="{{fileList}}" bindchange="changeQuestion">
+    <view class="curQuestion">当前题库: <text>{{curListItem}}</text></view>
+  </picker>
   <question class="question" name="{{curListItem}}" questions="{{questions}}"></question>
 </view>

@@ -9,11 +9,9 @@
       wx:for-item="item" wx:key="index" class="{{curStyle[answer[index]]}}">{{item}}</text>
   </view>
   <view class="footer">
-    <view class="btn-group">
-      <button id="preBtn" plain type="default" size="mini" bindtap="switchQuestion">上一题</button>
-      <button id="nextBtn" plain type="default" size="mini" bindtap="switchQuestion">下一题</button>
-      <button type="warn" plain size="mini" bindtap="reWork">重做</button>
-    </view>
+    <button id="preBtn" plain type="default" size="mini" bindtap="switchQuestion">上一题</button>
+    <button id="nextBtn" plain type="default" size="mini" bindtap="switchQuestion">下一题</button>
+    <button type="warn" plain size="mini" bindtap="reWork">重做</button>
   </view>
 </view>
 <view class="answerSheet" bindtap="switchAnswerSheet">
