@@ -158,6 +158,10 @@ Component({
         return
       }
       this.data.iterator.get(parseInt(quesId) - 1) // 利用迭代器切换当前题目
+      wx.pageScrollTo({ // 滚到顶部
+        scrollTop: 0,
+        duration: 300
+      })
     },
     // 检查当前题目是否做过
     checkState(quesId) {
@@ -195,7 +199,7 @@ Component({
       }
       wx.showModal({
         title: '警告',
-        content: '您确认重做当前题库嘛？该操作是不可逆的',
+        content: '您确认重做？该操作不可逆',
         confirmText: '确认重做',
         cancelText: '继续做题',
         success(res) {

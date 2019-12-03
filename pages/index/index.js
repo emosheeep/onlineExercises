@@ -24,7 +24,7 @@ Page({
     // 否则提示
     wx.showModal({
       title: '提示',
-      content: '您确定要切换题库？当前答题记录将会保存',
+      content: '确认切换题库？答题记录会保存',
       confirmText: '确认切换',
       cancelText: '继续做题',
       success (res) {

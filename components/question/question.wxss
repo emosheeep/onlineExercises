@@ -22,20 +22,18 @@
   justify-content: space-between;
   flex-grow: 1;
 }
-.body text{
+.body text {
   display: block;
   padding: 10rpx;
   height: 60rpx;
   line-height: 60rpx;
-  border-radius: 5rpx;
+  border-radius: 10rpx;
 }
+
 .body text:hover {
   background-color: rgb(245,245,245);
 }
-.body text:nth-child(1)::before{content: "A. "}
-.body text:nth-child(2)::before{content: "B. "}
-.body text:nth-child(3)::before{content: "C. "}
-.body text:nth-child(4)::before{content: "D. "}
+
 .footer .btn-group{
   display: flex;
   justify-content: space-between;
@@ -52,6 +50,7 @@
 .active {
   background-color: lightblue !important
 }
+
 .success {
   background-color:rgb(223,240,216) !important
 }

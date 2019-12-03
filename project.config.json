@@ -7,9 +7,11 @@
 		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
+		"preloadBackgroundData": false,
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
+		"nodeModules": true,
 		"autoAudits": false,
 		"showShadowRootInWxmlPanel": true,
 		"scopeDataCheck": false,
@@ -20,13 +22,12 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		},
-		"nodeModules": true
+		}
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.9.4",
-	"appid": "wxb0be74f3286ed38c",
-	"projectname": "%E5%9C%A8%E7%BA%BF%E7%AD%94%E9%A2%98%E5%B0%8F%E7%A8%8B%E5%BA%8F",
+	"appid": "wx5d74770e43bb4808",
+	"projectname": "%E5%9C%A8%E7%BA%BF%E7%AD%94%E9%A2%98",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},

@@ -6,7 +6,7 @@
   </view>
   <view class="body" bindtap="judge">
     <text wx:for="{{current.list}}" wx:for-index="index" data-index="{{index}}"
-      wx:for-item="item" wx:key="index" class="{{curStyle[answer[index]]}}">{{item}}</text>
+      wx:for-item="item" wx:key="index" class="{{curStyle[answer[index]]}}">{{answer[index]}}. {{item}}</text>
   </view>
   <view class="footer">
     <view class="btn-group">
