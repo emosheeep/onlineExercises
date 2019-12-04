@@ -2,20 +2,15 @@
 
 > 在线做题网站
 
-## Build Setup
+## 起步
+
+[项目后端仓库]()
 
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 运行服务到 0.0.0.0:80端口，在config目录下index.js文件配置
 npm run dev
 
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
