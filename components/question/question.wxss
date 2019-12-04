@@ -33,7 +33,6 @@
 .body text:hover {
   background-color: rgb(245,245,245);
 }
-
 .footer .btn-group{
   display: flex;
   justify-content: space-between;
@@ -50,7 +49,6 @@
 .active {
   background-color: lightblue !important
 }
-
 .success {
   background-color:rgb(223,240,216) !important
 }
@@ -71,4 +69,13 @@
   height: 72rpx;
   line-height: 72rpx;
   border: 1px rgb(245,245,245) solid;
+}
+.score {
+  display: flex;
+  justify-content: space-between;
+  width: 90rpx;
+}
+.score view {
+  line-height: 58rpx;
+  height: 58rpx;
 }

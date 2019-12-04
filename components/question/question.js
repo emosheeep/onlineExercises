@@ -131,7 +131,7 @@ Component({
       }
       if (flag) {
         _this.clearState()
-        options = {}
+        options = null
       }
       app.globalData.quesState[_this.properties.name] = options
     },

@@ -1,4 +1,6 @@
 //app.js
+const FILES = 'https://www.biubiubius.com/files'
+const QUESTION = 'https://www.biubiubius.com/question'
 App({
   globalData: {
     fileList: [],   // 保存文件列表
@@ -8,7 +10,7 @@ App({
   getFileList (callback) {
     let _this = this
     wx.request({
-      url: 'http://www.biubiubius.com:3000/files',
+      url: FILES,
       success (res) {
         let data = res.data
         if (data instanceof Array) {
@@ -42,7 +44,7 @@ App({
       return wx.hideLoading()
     }
     wx.request({
-      url: 'http://www.biubiubius.com:3000/question',
+      url: QUESTION,
       method: 'POST',
       data: {
         filename: filename
