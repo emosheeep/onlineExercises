@@ -1,8 +1,8 @@
 # onlineExercises
 > 将本地题库(excel表格)内的题目加载到网页中，类似刷题软件一样做题，题库题目需要符合一定的格式
 
-1. [项目体验]()
-2. [后端项目地址]()
+1. [项目体验](http://qxy_1446445040.gitee.io/onlineexercises)
+2. [后端项目地址](https://github.com/1446445040/onlineExercisesServer)
 
 ## 写在前面
 这个小项目是我在学习完**JavaScript设计模式**这本书之后的一个小小的实践，果然知识还是需要实践才能更好地掌握。

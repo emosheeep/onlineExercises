@@ -3,17 +3,12 @@ html,body{
 	width: 100%;
 }
 .page-head{
-	height: 80px;
+	text-align: center;
 }
-.page-body{
-	height: calc(100% - 80px);
-}
-.page-body-leftBar{
-	padding: 0;
-	height: 100%;
-}
-.row{
-	margin: 0!important;
+.page-head h3{
+	line-height: 60px;
+	height: 60px;
+	margin: 0;
 }
 .header{
 	padding: 8px!important;
@@ -27,13 +22,15 @@ html,body{
 #container{
 	display: flex;
 	height: 100%;
+	width: 900px;
+	margin: 0 auto;
 	padding: 0;
 }
 #load{}
 .leftBar{
 	position: relative;
 	width: 282px;
-	height: 100%;
+	height: 400px;
 	min-height: 350px;
 	outline: 1px solid rgb(221,221,221);
 	padding: 0;
@@ -138,7 +135,7 @@ ol#list li:nth-child(4)::before{
 	margin: 0 3px;
 }
 #questionBox{
-	min-width: 350px;
+	width: 600px;
 	min-height: 350px;
 	display: flex;
 	flex-direction: column;
