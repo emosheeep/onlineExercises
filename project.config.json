@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -12,6 +12,8 @@
 		"coverView": true,
 		"nodeModules": true,
 		"autoAudits": true,
+		"showShadowRootInWxmlPanel": true,
+		"scopeDataCheck": false,
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
@@ -20,9 +22,7 @@
 			"disablePlugins": [],
 			"outputPath": ""
 		},
-		"preloadBackgroundData": false,
-		"showShadowRootInWxmlPanel": true,
-		"scopeDataCheck": false
+		"preloadBackgroundData": false
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.9.4",

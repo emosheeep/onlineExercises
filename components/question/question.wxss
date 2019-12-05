@@ -31,7 +31,7 @@
 }
 
 .body text:hover {
-  background-color: rgb(245,245,245);
+  background-color: rgb(245, 245, 245);
 }
 .footer .btn-group{
   display: flex;
