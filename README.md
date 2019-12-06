@@ -12,5 +12,8 @@
 # 导入小程序项目编译运行即可
 ```
 
+## 扫码体验
+![](README_files/小程序.jpg)
+
 ## 预览
 ![](README_files/1.jpg)
