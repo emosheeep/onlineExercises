@@ -4,7 +4,7 @@
 
 [后端仓库地址](https://github.com/1446445040/onlineExercisesServer)
 
-[预览](http://app.biubiubius.com:8081)
+[预览](http://app.biubiubius.com:8001)
 
 ## 截图
 ![加载](./screenshots/加载.png)
@@ -19,6 +19,9 @@ npm install
 
 # 运行服务，端口可在config目录下index.js文件配置
 npm run dev
+
+# 构建项目并输出打包分析报告（构建项目需要运行在服务器上）
+npm run build
 
 ```
 
