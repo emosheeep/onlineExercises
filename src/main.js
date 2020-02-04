@@ -8,7 +8,9 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
 
-Vue.use(ElementUI)
+if (process.env.NODE_ENV !== 'production') {
+  Vue.use(ElementUI)
+}
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
